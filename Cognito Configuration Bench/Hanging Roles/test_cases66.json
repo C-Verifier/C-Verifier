@@ -1,0 +1,97 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:c9f8e7d6-a5b4-c3d2-e1f0-a9b8c7d6e5f4",
+            "name": "PoolAlpha7XZ",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": true,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/RoleGamma4FG",
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/RoleDelta2RS"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/RoleGamma4FG",
+            "name": "RoleGamma4FG",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:c9f8e7d6-a5b4-c3d2-e1f0-a9b8c7d6e5f4"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": "lambda:InvokeFunction",
+                            "Resource": "arn:aws:lambda:us-east-1:123456789012:function:FunctionOmega3UV"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/RoleDelta2RS",
+            "name": "RoleDelta2RS",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:c9f8e7d6-a5b4-c3d2-e1f0-a9b8c7d6e5f4"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": "lambda:InvokeFunction",
+                            "Resource": "arn:aws:lambda:us-east-1:123456789012:function:FunctionPhi8KL"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "dynamodb:GetItem",
+                                "dynamodb:PutItem"
+                            ],
+                            "Resource": "arn:aws:dynamodb:us-east-1:123456789012:table/TableSigma1MN"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "expected_result": "no_vulnerable"
+}

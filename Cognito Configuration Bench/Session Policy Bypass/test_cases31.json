@@ -1,0 +1,149 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f",
+            "name": "PrimaryApplicationIdentities",
+            "config": {
+                "AllowUnauthenticatedIdentities": false,
+                "AllowClassicFlow": true,
+                "UnauthenticatedRoleArn": null,
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/PrimaryAppUserRole"
+            }
+        },
+        {
+            "id": "us-east-1:a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+            "name": "SecondaryUtilityIdentities",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": false,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/UtilityGuestAccessRole",
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/UtilityAuthenticatedAccessRole"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/PrimaryAppUserRole",
+            "name": "PrimaryAppUserRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "PrimaryUserIamLeak",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "iam:ListAttachedRolePolicies",
+                                "Resource": "arn:aws:iam::123456789012:role/*"
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": "s3:GetObject",
+                                "Resource": "arn:aws:s3:::primary-app-data/*"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/UtilityAuthenticatedAccessRole",
+            "name": "UtilityAuthenticatedAccessRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "UtilityUserSecureAccess",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "lambda:InvokeFunction",
+                                "Resource": "arn:aws:lambda:us-east-1:123456789012:function:secondaryUtilityFunction"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/UtilityGuestAccessRole",
+            "name": "UtilityGuestAccessRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "UtilityGuestPublicInfo",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "s3:GetObject",
+                                "Resource": "arn:aws:s3:::utility-public-docs/*"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "expected_result": "vulnerable"
+}

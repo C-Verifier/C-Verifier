@@ -1,0 +1,146 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-west-2:a1b2c3d4-e5f6-7890-1234-567890abcdef",
+            "name": "TuneStreamPool",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": true,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/TuneStreamUnauthPlaybackRole",
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/TuneStreamAuthUserLibraryRole"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/TuneStreamUnauthPlaybackRole",
+            "name": "TuneStreamUnauthPlaybackRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-west-2:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Resource": "arn:aws:s3:::music-streaming-service-previews/*"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/TuneStreamAuthUserLibraryRole",
+            "name": "TuneStreamAuthUserLibraryRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-west-2:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:GetObject"
+                            ],
+                            "Resource": "arn:aws:s3:::music-streaming-service-user-library/private/${cognito-identity.amazonaws.com:sub}/*"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:InvokeFunction"
+                            ],
+                            "Resource": "arn:aws:lambda:us-west-2:123456789012:function:UpdateUserPlaylistFunction"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/ArtistRoyaltyCalculationRole",
+            "name": "ArtistRoyaltyCalculationRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-west-2:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "dynamodb:Scan",
+                                "dynamodb:Query"
+                            ],
+                            "Resource": "arn:aws:dynamodb:us-west-2:123456789012:table/SongPlaybackStatsTable"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:InvokeFunction"
+                            ],
+                            "Resource": "arn:aws:lambda:us-west-2:123456789012:function:GenerateRoyaltyReportsFunction"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "expected_result": "vulnerable"
+}

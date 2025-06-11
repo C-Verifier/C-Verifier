@@ -1,0 +1,111 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f",
+            "name": "identityPoolScenario27AuthMultiPolicy",
+            "config": {
+                "AllowUnauthenticatedIdentities": false,
+                "AllowClassicFlow": false,
+                "UnauthenticatedRoleArn": null,
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/authRoleScenario27"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/authRoleScenario27",
+            "name": "authRoleScenario27",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "authS3UserDataAccess",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "s3:GetObject",
+                                    "s3:PutObject"
+                                ],
+                                "Resource": "arn:aws:s3:::my-user-data-bucket-scenario27/${cognito-identity.amazonaws.com:sub}/*"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "PolicyName": "authDynamoAppSettingsAccess",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "dynamodb:GetItem",
+                                "Resource": "arn:aws:dynamodb:us-east-1:123456789012:table/applicationSettingsScenario27"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/unauthRoleScenario27",
+            "name": "unauthRoleScenario27",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "unauthSnsPublishAlerts",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "sns:Publish",
+                                "Resource": "arn:aws:sns:us-east-1:123456789012:myPublicAlertsTopicScenario27"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "expected_result": "no_vulnerable"
+}

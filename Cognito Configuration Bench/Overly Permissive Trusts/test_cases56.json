@@ -1,0 +1,117 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f",
+            "name": "ComplianceOpsPool",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": false,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/ComplianceViewerGuestRole",
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/ComplianceOperatorUserRole"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/ComplianceOperatorUserRole",
+            "name": "ComplianceOperatorUserRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity"
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "AuthUserS3BypassRetentionLeak",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "s3:BypassGovernanceRetention",
+                                "Resource": "arn:aws:s3:::financial-records-archive/*"
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": "s3:GetObject",
+                                "Resource": "arn:aws:s3:::financial-records-archive/*"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/ComplianceViewerGuestRole",
+            "name": "ComplianceViewerGuestRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "GuestUserS3GetObjectLegalHold",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "s3:GetObjectLegalHold",
+                                "Resource": "arn:aws:s3:::public-compliance-reports/*"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/StaleUnauthRoleXyz",
+            "name": "StaleUnauthRoleXyz",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:deadbeef-cafe-babe-feed-000000000008"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": []
+        }
+    ],
+    "expected_result": "no vulnerable"
+}

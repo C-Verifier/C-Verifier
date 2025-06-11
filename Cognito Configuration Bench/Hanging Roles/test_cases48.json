@@ -1,0 +1,173 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-2:a1b2c3d4-e5f6-7890-1234-567890abcdef",
+            "name": "OhioContentPlatformClassicPool",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": true,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/OhioContentUnauthFeedRole",
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/OhioContentAuthUserPrefsRole"
+            }
+        },
+        {
+            "id": "us-east-1:b2c3d4e5-f6a7-89b0-c1d2-e3f456abcdef0",
+            "name": "USEastAnalyticsEngineClassicPool",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": true
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/OhioContentUnauthFeedRole",
+            "name": "OhioContentUnauthFeedRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-2:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:InvokeFunction"
+                            ],
+                            "Resource": "arn:aws:lambda:us-east-2:123456789012:function:GetPublicContentFeedFunction"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/OhioContentAuthUserPrefsRole",
+            "name": "OhioContentAuthUserPrefsRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-2:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:InvokeFunction"
+                            ],
+                            "Resource": "arn:aws:lambda:us-east-2:123456789012:function:UpdateUserPreferencesFunction"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "dynamodb:GetItem",
+                                "dynamodb:PutItem"
+                            ],
+                            "Resource": "arn:aws:dynamodb:us-east-2:123456789012:table/UserContentPreferences"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/ContentUsageAnalyticsRole",
+            "name": "ContentUsageAnalyticsRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:b2c3d4e5-f6a7-89b0-c1d2-e3f456abcdef0"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    },
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-2:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "dynamodb:Scan"
+                            ],
+                            "Resource": "arn:aws:dynamodb:us-east-1:123456789012:table/ContentAccessLogs"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:GetObject",
+                                "s3:ListBucket"
+                            ],
+                            "Resource": [
+                                "arn:aws:s3:::user-behavior-analytics-data/*",
+                                "arn:aws:s3:::user-behavior-analytics-data"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "expected_result": "vulnerable"
+}

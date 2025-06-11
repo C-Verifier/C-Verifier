@@ -1,0 +1,122 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f",
+            "name": "identityPoolScenario10Advanced",
+            "config": {
+                "AllowUnauthenticatedIdentities": false,
+                "AllowClassicFlow": false,
+                "UnauthenticatedRoleArn": null,
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/authRoleScenario10"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/authRoleScenario10",
+            "name": "authRoleScenario10",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "s3FineGrainedAccess",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "s3:GetObject",
+                                "Resource": "arn:aws:s3:::my-app-bucket-scenario10/readonly_data/*"
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "s3:GetObject",
+                                    "s3:PutObject"
+                                ],
+                                "Resource": "arn:aws:s3:::my-app-bucket-scenario10/user_workspaces/${cognito-identity.amazonaws.com:sub}/*"
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": "s3:ListBucket",
+                                "Resource": "arn:aws:s3:::my-app-bucket-scenario10",
+                                "Condition": {
+                                    "StringLike": {
+                                        "s3:prefix": [
+                                            "readonly_data/*",
+                                            "user_workspaces/${cognito-identity.amazonaws.com:sub}/*"
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "PolicyName": "dynamoAndLambdaAdvanced",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "dynamodb:Query",
+                                    "dynamodb:BatchGetItem"
+                                ],
+                                "Resource": [
+                                    "arn:aws:dynamodb:us-east-1:123456789012:table/configTableScenario10",
+                                    "arn:aws:dynamodb:us-east-1:123456789012:table/userSpecificTableScenario10"
+                                ]
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": "lambda:InvokeFunction",
+                                "Resource": [
+                                    "arn:aws:lambda:us-east-1:123456789012:function:dataProcessingFuncScenario10",
+                                    "arn:aws:lambda:us-east-1:123456789012:function:userNotificationFuncScenario10"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "PolicyName": "denyHighPrivilegeActions",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Deny",
+                                "Action": [
+                                    "iam:*",
+                                    "ec2:CreateVpc",
+                                    "s3:CreateBucket",
+                                    "dynamodb:CreateTable"
+                                ],
+                                "Resource": "*"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "expected_result": "no_vulnerable"
+}

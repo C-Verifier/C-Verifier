@@ -1,0 +1,189 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f",
+            "name": "FlexibleUserAccessPoolOne",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": true,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/FlexAccessOneGuestRole",
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/FlexAccessOneUserLeakyTrustRole"
+            }
+        },
+        {
+            "id": "us-east-1:e5f6a7b8-c9d0-1454-cccc-5c6d7e8f9a0c",
+            "name": "FlexibleUserAccessPoolTwo",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": true,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/FlexAccessTwoGuestRole",
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/FlexAccessTwoUserLeakyTrustRole"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/FlexAccessOneUserLeakyTrustRole",
+            "name": "FlexAccessOneUserLeakyTrustRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": [
+                                    "authenticated",
+                                    "unauthenticated"
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "FlexAccessOneUserS3Full",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "s3:*",
+                                "Resource": "arn:aws:s3:::flex-access-one-data/*"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/FlexAccessOneGuestRole",
+            "name": "FlexAccessOneGuestRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "FlexAccessOneGuestS3PublicRead",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "s3:GetObject",
+                                "Resource": "arn:aws:s3:::flex-access-one-public/*"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/FlexAccessTwoUserLeakyTrustRole",
+            "name": "FlexAccessTwoUserLeakyTrustRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:e5f6a7b8-c9d0-1454-cccc-5c6d7e8f9a0c"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": [
+                                    "authenticated",
+                                    "unauthenticated"
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "FlexAccessTwoUserLambdaFull",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "lambda:*",
+                                "Resource": "arn:aws:lambda:us-east-1:123456789012:function:flex-access-two-*"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/FlexAccessTwoGuestRole",
+            "name": "FlexAccessTwoGuestRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:e5f6a7b8-c9d0-1454-cccc-5c6d7e8f9a0c"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "FlexAccessTwoGuestLambdaInvokePublic",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "lambda:InvokeFunction",
+                                "Resource": "arn:aws:lambda:us-east-1:123456789012:function:flex-access-two-publicAPI"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "expected_result": "vulnerable"
+}

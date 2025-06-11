@@ -1,0 +1,75 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:f5a6b7c8-d9e0-f1a2-b3c4-d5e6f7a8b9c0",
+            "name": "PoolEcho9OP",
+            "config": {
+                "AllowUnauthenticatedIdentities": false,
+                "AllowClassicFlow": false,
+                "UnauthenticatedRoleArn": null,
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/RoleGolf1QR"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/RoleGolf1QR",
+            "name": "RoleGolf1QR",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:f5a6b7c8-d9e0-f1a2-b3c4-d5e6f7a8b9c0"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Action": "iot:Publish",
+                            "Effect": "Allow",
+                            "Resource": [
+                                "arn:aws:iot:us-east-1:123456789012:topic/gwyqgsdtclbbvzkvdvudfilaunrvoiew/update",
+                                "arn:aws:iot:us-east-1:123456789012:topic/gwyqgsdtclbbvzkvdvudfilaunrvoiew/get",
+                                "arn:aws:iot:us-east-1:123456789012:topic/lzlxkhguwvrkdgjuviolaqmecowrvcvb/update",
+                                "arn:aws:iot:us-east-1:123456789012:topic/lzlxkhguwvrkdgjuviolaqmecowrvcvb/get"
+                            ]
+                        },
+                        {
+                            "Action": "iot:Subscribe",
+                            "Effect": "Allow",
+                            "Resource": [
+                                "arn:aws:iot:us-east-1:123456789012:topicfilter/gwyqgsdtclbbvzkvdvudfilaunrvoiew/status",
+                                "arn:aws:iot:us-east-1:123456789012:topicfilter/gwyqgsdtclbbvzkvdvudfilaunrvoiew/get/accepted",
+                                "arn:aws:iot:us-east-1:123456789012:topicfilter/gwyqgsdtclbbvzkvdvudfilaunrvoiew/update/accepted",
+                                "arn:aws:iot:us-east-1:123456789012:topicfilter/lzlxkhguwvrkdgjuviolaqmecowrvcvb/status",
+                                "arn:aws:iot:us-east-1:123456789012:topicfilter/lzlxkhguwvrkdgjuviolaqmecowrvcvb/get/accepted",
+                                "arn:aws:iot:us-east-1:123456789012:topicfilter/lzlxkhguwvrkdgjuviolaqmecowrvcvb/update/accepted"
+                            ]
+                        },
+                        {
+                            "Action": "iot:Receive",
+                            "Effect": "Allow",
+                            "Resource": "*"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "expected_result": "no_vulnerable"
+}

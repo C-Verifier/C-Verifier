@@ -1,0 +1,102 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+            "name": "PoolHotel3ST",
+            "config": {
+                "AllowUnauthenticatedIdentities": false,
+                "AllowClassicFlow": false,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/RoleIndia5UV",
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/RoleJuliet7WX"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/RoleIndia5UV",
+            "name": "RoleIndia5UV",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": "s3:GetObject",
+                            "Resource": "arn:aws:s3:::public-readable-bucket-xyz/*"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/RoleJuliet7WX",
+            "name": "RoleJuliet7WX",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": "lambda:InvokeFunction",
+                            "Resource": "arn:aws:lambda:us-east-1:123456789012:function:FunctionKilo9YZ"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:GetObject",
+                                "s3:PutObject"
+                            ],
+                            "Resource": "arn:aws:s3:::private-user-data-bucket-abc/*"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": "s3:GetObject",
+                            "Resource": "arn:aws:s3:::public-readable-bucket-xyz/*"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "expected_result": "no_vulnerable"
+}

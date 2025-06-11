@@ -1,0 +1,144 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f",
+            "name": "UniversalAccessPoolLeaky",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": true,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/UniversalGuestLimitedRole",
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/UniversalOperatorRoleLeakyTrust"
+            }
+        },
+        {
+            "id": "us-east-1:b2c3d4e5-2222-3333-4444-f3a4b5c6d7e0",
+            "name": "SecureDataEntryPool",
+            "config": {
+                "AllowUnauthenticatedIdentities": false,
+                "AllowClassicFlow": false,
+                "UnauthenticatedRoleArn": null,
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/DataEntryUserRoleSecure"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/UniversalOperatorRoleLeakyTrust",
+            "name": "UniversalOperatorRoleLeakyTrust",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "*"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "UniversalOperatorIoTFull",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "iot:*",
+                                "Resource": "*"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/UniversalGuestLimitedRole",
+            "name": "UniversalGuestLimitedRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "UniversalGuestIoTSubscribe",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "iot:Subscribe",
+                                "Resource": "arn:aws:iot:us-east-1:123456789012:topicfilter/public/*"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/DataEntryUserRoleSecure",
+            "name": "DataEntryUserRoleSecure",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:b2c3d4e5-2222-3333-4444-f3a4b5c6d7e0"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "DataEntryDynamoPutOnly",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "dynamodb:PutItem",
+                                "Resource": "arn:aws:dynamodb:us-east-1:123456789012:table/SecureDataEntryTable"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "expected_result": "vulnerable"
+}

@@ -1,0 +1,1695 @@
+{
+  "roles": [
+    {
+      "arn": "arn:aws:iam::1234567890:role/service-role/authrole_test1",
+      "name": "authrole_test1",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:12345678-1234-1234-1234-00000002"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "cognito-identity:GetCredentialsForIdentity",
+                "iot:*",
+                "ecs:*"
+              ],
+              "Resource": [
+                "*"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::1234567890:role/service-role/cognito-test-high-permission",
+      "name": "cognito-test-high-permission",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:12345678-1234-1234-1234-00000000"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "cognito-identity:GetCredentialsForIdentity"
+              ],
+              "Resource": [
+                "*"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::1234567890:role/service-role/cognito-test-new-role",
+      "name": "cognito-test-new-role",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:12345678-1234-1234-1234-00000000"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          },
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:12345678-1234-1234-1234-00000000"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "cognito-identity:GetCredentialsForIdentity"
+              ],
+              "Resource": [
+                "*"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::1234567890:role/service-role/cz-idpool-test1",
+      "name": "cz-idpool-test1",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:12345678-1234-1234-1234-00000000"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "cognito-identity:GetCredentialsForIdentity"
+              ],
+              "Resource": [
+                "*"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::1234567890:role/service-role/unauthrole_test2",
+      "name": "unauthrole_test2",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:12345678-1234-1234-1234-00000003"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "cognito-identity:GetCredentialsForIdentity"
+              ],
+              "Resource": [
+                "*"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::1234567890:role/service-role/unauthrole_test3",
+      "name": "unauthrole_test3",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:12345678-1234-1234-1234-00000004"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "cognito-identity:GetCredentialsForIdentity"
+              ],
+              "Resource": [
+                "*"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::1234567890:role/service-role/unauthrole_test4",
+      "name": "unauthrole_test4",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:12345678-1234-1234-1234-00000005"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "cognito-identity:GetCredentialsForIdentity"
+              ],
+              "Resource": [
+                "*"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::1234567890:role/service-role/unauth_test1",
+      "name": "unauth_test1",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:12345678-1234-1234-1234-00000002"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "cognito-identity:GetCredentialsForIdentity"
+              ],
+              "Resource": [
+                "*"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::1234567890:role/us-east-1_gR86QDjfJ-authRole",
+      "name": "us-east-1_gR86QDjfJ-authRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:12345678-1234-1234-1234-00000006"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": []
+    },
+    {
+      "arn": "arn:aws:iam::1234567890:role/us-east-1_gR86QDjfJ_Full-access",
+      "name": "us-east-1_gR86QDjfJ_Full-access",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "CognitoAssumeRolePolicy",
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:12345678-1234-1234-1234-00000006"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          },
+          {
+            "Sid": "SelfAssumeRolePolicy",
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": "arn:aws:iam::1234567890:role/us-east-1_gR86QDjfJ_Full-access"
+            },
+            "Action": "sts:AssumeRole"
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "CLICloudformationPolicy",
+              "Effect": "Allow",
+              "Action": [
+                "cloudformation:DeleteStackSet",
+                "cloudformation:DescribeStackSet",
+                "cloudformation:UpdateStackSet"
+              ],
+              "Resource": [
+                "arn:aws:cloudformation:*:*:stack/amplify-*"
+              ]
+            },
+            {
+              "Sid": "CLIManageviaCFNPolicy",
+              "Effect": "Allow",
+              "Action": [
+                "cognito-idp:SetUserPoolMfaConfig",
+                "appsync:UntagResource",
+                "es:UpdateElasticsearchDomainConfig",
+                "dynamodb:UntagResource",
+                "iam:UntagRole"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "ForAnyValue:StringEquals": {
+                  "aws:CalledVia": [
+                    "cloudformation.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "CLISDKCalls",
+              "Effect": "Allow",
+              "Action": [
+                "lambda:GetLayerVersion",
+                "rekognition:DescribeCollection",
+                "logs:DescribeLogStreams",
+                "logs:GetLogEvents",
+                "lex:GetBot",
+                "lex:GetBuiltinIntent",
+                "lex:GetBuiltinIntents",
+                "lex:GetBuiltinSlotTypes",
+                "lambda:InvokeFunction",
+                "cognito-idp:ListIdentityProviders",
+                "cognito-idp:AddCustomAttributes",
+                "cloudformation:ListStackResources",
+                "cloudformation:DescribeStacks",
+                "lambda:UpdateEventSourceMapping",
+                "polly:DescribeVoices"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "CLISSMSDKCalls",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:DeleteParameter",
+                "ssm:DeleteParameters",
+                "ssm:GetParameter",
+                "ssm:GetParameters",
+                "ssm:GetParametersByPath",
+                "ssm:PutParameter"
+              ],
+              "Resource": "arn:aws:ssm:*:*:parameter/amplify/*"
+            },
+            {
+              "Sid": "GeoPowerUser",
+              "Effect": "Allow",
+              "Action": [
+                "geo:*"
+              ],
+              "Resource": "*"
+            }
+          ]
+        },
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "CLICloudformationPolicy",
+              "Effect": "Allow",
+              "Action": [
+                "cloudformation:CreateChangeSet",
+                "cloudformation:CreateStack",
+                "cloudformation:DeleteStack",
+                "cloudformation:DescribeChangeSet",
+                "cloudformation:DescribeStackEvents",
+                "cloudformation:DescribeStackResource",
+                "cloudformation:DescribeStackResources",
+                "cloudformation:DescribeStacks",
+                "cloudformation:ExecuteChangeSet",
+                "cloudformation:GetTemplate",
+                "cloudformation:UpdateStack",
+                "cloudformation:ListStacks",
+                "cloudformation:ListStackResources",
+                "cloudformation:DeleteStackSet",
+                "cloudformation:DescribeStackSet",
+                "cloudformation:UpdateStackSet",
+                "cloudformation:TagResource",
+                "cloudformation:UntagResource"
+              ],
+              "Resource": [
+                "arn:aws:cloudformation:*:*:stack/amplify-*"
+              ]
+            },
+            {
+              "Sid": "CLIManageviaCFNPolicy",
+              "Effect": "Allow",
+              "Action": [
+                "iam:ListRoleTags",
+                "iam:TagRole",
+                "iam:AttachRolePolicy",
+                "iam:CreatePolicy",
+                "iam:DeletePolicy",
+                "iam:DeleteRole",
+                "iam:DeleteRolePolicy",
+                "iam:DetachRolePolicy",
+                "iam:PutRolePolicy",
+                "iam:UntagRole",
+                "iam:UpdateRole",
+                "iam:GetRole",
+                "iam:GetPolicy",
+                "iam:GetRolePolicy",
+                "iam:PassRole",
+                "iam:ListPolicyVersions",
+                "iam:CreatePolicyVersion",
+                "iam:DeletePolicyVersion",
+                "iam:CreateRole",
+                "iam:ListRolePolicies",
+                "iam:PutRolePermissionsBoundary",
+                "iam:DeleteRolePermissionsBoundary",
+                "appsync:CreateApiKey",
+                "appsync:CreateDataSource",
+                "appsync:CreateFunction",
+                "appsync:CreateResolver",
+                "appsync:CreateType",
+                "appsync:DeleteApiKey",
+                "appsync:DeleteDataSource",
+                "appsync:DeleteFunction",
+                "appsync:DeleteResolver",
+                "appsync:DeleteType",
+                "appsync:GetDataSource",
+                "appsync:GetFunction",
+                "appsync:GetIntrospectionSchema",
+                "appsync:GetResolver",
+                "appsync:GetSchemaCreationStatus",
+                "appsync:GetType",
+                "appsync:GraphQL",
+                "appsync:ListApiKeys",
+                "appsync:ListDataSources",
+                "appsync:ListFunctions",
+                "appsync:ListGraphqlApis",
+                "appsync:ListResolvers",
+                "appsync:ListResolversByFunction",
+                "appsync:ListTypes",
+                "appsync:StartSchemaCreation",
+                "appsync:UntagResource",
+                "appsync:UpdateApiKey",
+                "appsync:UpdateDataSource",
+                "appsync:UpdateFunction",
+                "appsync:UpdateResolver",
+                "appsync:UpdateType",
+                "appsync:TagResource",
+                "appsync:CreateGraphqlApi",
+                "appsync:DeleteGraphqlApi",
+                "appsync:GetGraphqlApi",
+                "appsync:ListTagsForResource",
+                "appsync:UpdateGraphqlApi",
+                "apigateway:DELETE",
+                "apigateway:GET",
+                "apigateway:PATCH",
+                "apigateway:POST",
+                "apigateway:PUT",
+                "cognito-idp:CreateUserPool",
+                "cognito-identity:CreateIdentityPool",
+                "cognito-identity:DeleteIdentityPool",
+                "cognito-identity:DescribeIdentity",
+                "cognito-identity:DescribeIdentityPool",
+                "cognito-identity:SetIdentityPoolRoles",
+                "cognito-identity:GetIdentityPoolRoles",
+                "cognito-identity:UpdateIdentityPool",
+                "cognito-idp:CreateUserPoolClient",
+                "cognito-idp:DeleteUserPool",
+                "cognito-idp:DeleteUserPoolClient",
+                "cognito-idp:DescribeUserPool",
+                "cognito-idp:DescribeUserPoolClient",
+                "cognito-idp:ListTagsForResource",
+                "cognito-idp:ListUserPoolClients",
+                "cognito-idp:UpdateUserPoolClient",
+                "cognito-idp:CreateGroup",
+                "cognito-idp:DeleteGroup",
+                "cognito-identity:TagResource",
+                "cognito-idp:TagResource",
+                "cognito-idp:UpdateUserPool",
+                "cognito-idp:SetUserPoolMfaConfig",
+                "lambda:AddPermission",
+                "lambda:CreateFunction",
+                "lambda:DeleteFunction",
+                "lambda:GetFunction",
+                "lambda:GetFunctionConfiguration",
+                "lambda:InvokeAsync",
+                "lambda:InvokeFunction",
+                "lambda:RemovePermission",
+                "lambda:UpdateFunctionCode",
+                "lambda:UpdateFunctionConfiguration",
+                "lambda:ListTags",
+                "lambda:TagResource",
+                "lambda:UntagResource",
+                "lambda:AddLayerVersionPermission",
+                "lambda:CreateEventSourceMapping",
+                "lambda:DeleteEventSourceMapping",
+                "lambda:DeleteLayerVersion",
+                "lambda:GetEventSourceMapping",
+                "lambda:GetLayerVersion",
+                "lambda:ListEventSourceMappings",
+                "lambda:ListLayerVersions",
+                "lambda:PublishLayerVersion",
+                "lambda:RemoveLayerVersionPermission",
+                "lambda:UpdateEventSourceMapping",
+                "dynamodb:CreateTable",
+                "dynamodb:DeleteItem",
+                "dynamodb:DeleteTable",
+                "dynamodb:DescribeContinuousBackups",
+                "dynamodb:DescribeTable",
+                "dynamodb:DescribeTimeToLive",
+                "dynamodb:ListStreams",
+                "dynamodb:PutItem",
+                "dynamodb:TagResource",
+                "dynamodb:ListTagsOfResource",
+                "dynamodb:UntagResource",
+                "dynamodb:UpdateContinuousBackups",
+                "dynamodb:UpdateItem",
+                "dynamodb:UpdateTable",
+                "dynamodb:UpdateTimeToLive",
+                "s3:CreateBucket",
+                "s3:ListBucket",
+                "s3:PutBucketAcl",
+                "s3:PutBucketCORS",
+                "s3:PutBucketNotification",
+                "s3:PutBucketPolicy",
+                "s3:PutBucketWebsite",
+                "s3:PutObjectAcl",
+                "cloudfront:CreateCloudFrontOriginAccessIdentity",
+                "cloudfront:CreateDistribution",
+                "cloudfront:DeleteCloudFrontOriginAccessIdentity",
+                "cloudfront:DeleteDistribution",
+                "cloudfront:GetCloudFrontOriginAccessIdentity",
+                "cloudfront:GetCloudFrontOriginAccessIdentityConfig",
+                "cloudfront:GetDistribution",
+                "cloudfront:GetDistributionConfig",
+                "cloudfront:TagResource",
+                "cloudfront:UntagResource",
+                "cloudfront:UpdateCloudFrontOriginAccessIdentity",
+                "cloudfront:UpdateDistribution",
+                "events:DeleteRule",
+                "events:DescribeRule",
+                "events:ListRuleNamesByTarget",
+                "events:PutRule",
+                "events:PutTargets",
+                "events:RemoveTargets",
+                "mobiletargeting:GetApp",
+                "kinesis:AddTagsToStream",
+                "kinesis:CreateStream",
+                "kinesis:DeleteStream",
+                "kinesis:DescribeStream",
+                "kinesis:DescribeStreamSummary",
+                "kinesis:ListTagsForStream",
+                "kinesis:PutRecords",
+                "es:AddTags",
+                "es:CreateElasticsearchDomain",
+                "es:DeleteElasticsearchDomain",
+                "es:DescribeElasticsearchDomain",
+                "es:UpdateElasticsearchDomainConfig",
+                "s3:PutEncryptionConfiguration",
+                "s3:PutBucketPublicAccessBlock"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "ForAnyValue:StringEquals": {
+                  "aws:CalledVia": [
+                    "cloudformation.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "CLISDKCalls",
+              "Effect": "Allow",
+              "Action": [
+                "appsync:GetIntrospectionSchema",
+                "appsync:GraphQL",
+                "appsync:UpdateApiKey",
+                "appsync:ListApiKeys",
+                "amplify:*",
+                "amplifybackend:*",
+                "amplifyuibuilder:*",
+                "sts:AssumeRole",
+                "mobiletargeting:*",
+                "cognito-idp:AdminAddUserToGroup",
+                "cognito-idp:AdminCreateUser",
+                "cognito-idp:CreateGroup",
+                "cognito-idp:DeleteGroup",
+                "cognito-idp:DeleteUser",
+                "cognito-idp:ListUsers",
+                "cognito-idp:AdminGetUser",
+                "cognito-idp:ListUsersInGroup",
+                "cognito-idp:AdminDisableUser",
+                "cognito-idp:AdminRemoveUserFromGroup",
+                "cognito-idp:AdminResetUserPassword",
+                "cognito-idp:AdminListGroupsForUser",
+                "cognito-idp:ListGroups",
+                "cognito-idp:AdminListUserAuthEvents",
+                "cognito-idp:AdminDeleteUser",
+                "cognito-idp:AdminConfirmSignUp",
+                "cognito-idp:AdminEnableUser",
+                "cognito-idp:AdminUpdateUserAttributes",
+                "cognito-idp:DescribeIdentityProvider",
+                "cognito-idp:DescribeUserPool",
+                "cognito-idp:DeleteUserPool",
+                "cognito-idp:DescribeUserPoolClient",
+                "cognito-idp:CreateUserPool",
+                "cognito-idp:CreateUserPoolClient",
+                "cognito-idp:UpdateUserPool",
+                "cognito-idp:AdminSetUserPassword",
+                "cognito-idp:ListUserPools",
+                "cognito-idp:ListUserPoolClients",
+                "cognito-idp:ListIdentityProviders",
+                "cognito-idp:GetUserPoolMfaConfig",
+                "cognito-identity:GetIdentityPoolRoles",
+                "cognito-identity:SetIdentityPoolRoles",
+                "cognito-identity:CreateIdentityPool",
+                "cognito-identity:DeleteIdentityPool",
+                "cognito-identity:ListIdentityPools",
+                "cognito-identity:DescribeIdentityPool",
+                "dynamodb:DescribeTable",
+                "dynamodb:ListTables",
+                "lambda:GetFunction",
+                "lambda:CreateFunction",
+                "lambda:AddPermission",
+                "lambda:DeleteFunction",
+                "lambda:DeleteLayerVersion",
+                "lambda:InvokeFunction",
+                "lambda:ListLayerVersions",
+                "iam:PutRolePolicy",
+                "iam:CreatePolicy",
+                "iam:AttachRolePolicy",
+                "iam:ListPolicyVersions",
+                "iam:ListAttachedRolePolicies",
+                "iam:CreateRole",
+                "iam:PassRole",
+                "iam:ListRolePolicies",
+                "iam:DeleteRolePolicy",
+                "iam:CreatePolicyVersion",
+                "iam:DeletePolicyVersion",
+                "iam:DeleteRole",
+                "iam:DetachRolePolicy",
+                "cloudformation:ListStacks",
+                "cloudformation:DescribeStacks",
+                "sns:CreateSMSSandboxPhoneNumber",
+                "sns:GetSMSSandboxAccountStatus",
+                "sns:VerifySMSSandboxPhoneNumber",
+                "sns:DeleteSMSSandboxPhoneNumber",
+                "sns:ListSMSSandboxPhoneNumbers",
+                "sns:ListOriginationNumbers",
+                "rekognition:DescribeCollection",
+                "logs:DescribeLogStreams",
+                "logs:GetLogEvents",
+                "lex:GetBot",
+                "lex:GetBuiltinIntent",
+                "lex:GetBuiltinIntents",
+                "lex:GetBuiltinSlotTypes",
+                "cloudformation:GetTemplateSummary",
+                "codecommit:GitPull",
+                "cloudfront:GetCloudFrontOriginAccessIdentity",
+                "cloudfront:GetCloudFrontOriginAccessIdentityConfig",
+                "polly:DescribeVoices"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AmplifySSMCalls",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:PutParameter",
+                "ssm:DeleteParameter",
+                "ssm:GetParametersByPath",
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+                "ssm:DeleteParameters"
+              ],
+              "Resource": "arn:aws:ssm:*:*:parameter/amplify/*"
+            },
+            {
+              "Sid": "GeoPowerUser",
+              "Effect": "Allow",
+              "Action": [
+                "geo:*"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AmplifyEcrSDKCalls",
+              "Effect": "Allow",
+              "Action": [
+                "ecr:DescribeRepositories"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AmplifyStorageSDKCalls",
+              "Effect": "Allow",
+              "Action": [
+                "s3:CreateBucket",
+                "s3:DeleteBucket",
+                "s3:DeleteBucketPolicy",
+                "s3:DeleteBucketWebsite",
+                "s3:DeleteObject",
+                "s3:DeleteObjectVersion",
+                "s3:GetBucketLocation",
+                "s3:GetObject",
+                "s3:ListAllMyBuckets",
+                "s3:ListBucket",
+                "s3:ListBucketVersions",
+                "s3:PutBucketAcl",
+                "s3:PutBucketCORS",
+                "s3:PutBucketNotification",
+                "s3:PutBucketPolicy",
+                "s3:PutBucketVersioning",
+                "s3:PutBucketWebsite",
+                "s3:PutEncryptionConfiguration",
+                "s3:PutLifecycleConfiguration",
+                "s3:PutObject",
+                "s3:PutObjectAcl"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AmplifySSRCalls",
+              "Effect": "Allow",
+              "Action": [
+                "cloudfront:CreateCloudFrontOriginAccessIdentity",
+                "cloudfront:CreateDistribution",
+                "cloudfront:CreateInvalidation",
+                "cloudfront:GetDistribution",
+                "cloudfront:GetDistributionConfig",
+                "cloudfront:ListCloudFrontOriginAccessIdentities",
+                "cloudfront:ListDistributions",
+                "cloudfront:ListDistributionsByLambdaFunction",
+                "cloudfront:ListDistributionsByWebACLId",
+                "cloudfront:ListFieldLevelEncryptionConfigs",
+                "cloudfront:ListFieldLevelEncryptionProfiles",
+                "cloudfront:ListInvalidations",
+                "cloudfront:ListPublicKeys",
+                "cloudfront:ListStreamingDistributions",
+                "cloudfront:UpdateDistribution",
+                "cloudfront:TagResource",
+                "cloudfront:UntagResource",
+                "cloudfront:ListTagsForResource",
+                "cloudfront:DeleteDistribution",
+                "iam:AttachRolePolicy",
+                "iam:CreateRole",
+                "iam:CreateServiceLinkedRole",
+                "iam:GetRole",
+                "iam:PutRolePolicy",
+                "iam:PassRole",
+                "lambda:CreateFunction",
+                "lambda:EnableReplication",
+                "lambda:DeleteFunction",
+                "lambda:GetFunction",
+                "lambda:GetFunctionConfiguration",
+                "lambda:PublishVersion",
+                "lambda:UpdateFunctionCode",
+                "lambda:UpdateFunctionConfiguration",
+                "lambda:ListTags",
+                "lambda:TagResource",
+                "lambda:UntagResource",
+                "route53:ChangeResourceRecordSets",
+                "route53:ListHostedZonesByName",
+                "route53:ListResourceRecordSets",
+                "s3:CreateBucket",
+                "s3:GetAccelerateConfiguration",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:PutAccelerateConfiguration",
+                "s3:PutBucketPolicy",
+                "s3:PutObject",
+                "s3:PutBucketTagging",
+                "s3:GetBucketTagging",
+                "lambda:ListEventSourceMappings",
+                "lambda:CreateEventSourceMapping",
+                "iam:UpdateAssumeRolePolicy",
+                "iam:DeleteRolePolicy",
+                "sqs:CreateQueue",
+                "sqs:DeleteQueue",
+                "sqs:GetQueueAttributes",
+                "sqs:SetQueueAttributes",
+                "amplify:GetApp",
+                "amplify:GetBranch",
+                "amplify:UpdateApp",
+                "amplify:UpdateBranch"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AmplifySSRViewLogGroups",
+              "Effect": "Allow",
+              "Action": "logs:DescribeLogGroups",
+              "Resource": "arn:aws:logs:*:*:log-group:*"
+            },
+            {
+              "Sid": "AmplifySSRCreateLogGroup",
+              "Effect": "Allow",
+              "Action": "logs:CreateLogGroup",
+              "Resource": "arn:aws:logs:*:*:log-group:/aws/amplify/*"
+            },
+            {
+              "Sid": "AmplifySSRPushLogs",
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+              ],
+              "Resource": "arn:aws:logs:*:*:log-group:/aws/amplify/*:log-stream:*"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::1234567890:role/us-east-1_gR86QDjfJ_Manage-only",
+      "name": "us-east-1_gR86QDjfJ_Manage-only",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "CognitoAssumeRolePolicy",
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:12345678-1234-1234-1234-00000006"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": []
+    },
+    {
+      "arn": "arn:aws:iam::1234567890:role/us-east-1_gwbbcl3cp-authRole",
+      "name": "us-east-1_gwbbcl3cp-authRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:12345678-1234-1234-1234-00000001"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": []
+    },
+    {
+      "arn": "arn:aws:iam::1234567890:role/us-east-1_gwbbcl3cp_Full-access",
+      "name": "us-east-1_gwbbcl3cp_Full-access",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "CognitoAssumeRolePolicy",
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:12345678-1234-1234-1234-00000001"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          },
+          {
+            "Sid": "SelfAssumeRolePolicy",
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": "arn:aws:iam::1234567890:role/us-east-1_gwbbcl3cp_Full-access"
+            },
+            "Action": "sts:AssumeRole"
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "CLICloudformationPolicy",
+              "Effect": "Allow",
+              "Action": [
+                "cloudformation:DeleteStackSet",
+                "cloudformation:DescribeStackSet",
+                "cloudformation:UpdateStackSet"
+              ],
+              "Resource": [
+                "arn:aws:cloudformation:*:*:stack/amplify-*"
+              ]
+            },
+            {
+              "Sid": "CLIManageviaCFNPolicy",
+              "Effect": "Allow",
+              "Action": [
+                "cognito-idp:SetUserPoolMfaConfig",
+                "appsync:UntagResource",
+                "es:UpdateElasticsearchDomainConfig",
+                "dynamodb:UntagResource",
+                "iam:UntagRole"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "ForAnyValue:StringEquals": {
+                  "aws:CalledVia": [
+                    "cloudformation.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "CLISDKCalls",
+              "Effect": "Allow",
+              "Action": [
+                "lambda:GetLayerVersion",
+                "rekognition:DescribeCollection",
+                "logs:DescribeLogStreams",
+                "logs:GetLogEvents",
+                "lex:GetBot",
+                "lex:GetBuiltinIntent",
+                "lex:GetBuiltinIntents",
+                "lex:GetBuiltinSlotTypes",
+                "lambda:InvokeFunction",
+                "cognito-idp:ListIdentityProviders",
+                "cognito-idp:AddCustomAttributes",
+                "cloudformation:ListStackResources",
+                "cloudformation:DescribeStacks",
+                "lambda:UpdateEventSourceMapping",
+                "polly:DescribeVoices"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "CLISSMSDKCalls",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:DeleteParameter",
+                "ssm:DeleteParameters",
+                "ssm:GetParameter",
+                "ssm:GetParameters",
+                "ssm:GetParametersByPath",
+                "ssm:PutParameter"
+              ],
+              "Resource": "arn:aws:ssm:*:*:parameter/amplify/*"
+            },
+            {
+              "Sid": "GeoPowerUser",
+              "Effect": "Allow",
+              "Action": [
+                "geo:*"
+              ],
+              "Resource": "*"
+            }
+          ]
+        },
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "CLICloudformationPolicy",
+              "Effect": "Allow",
+              "Action": [
+                "cloudformation:CreateChangeSet",
+                "cloudformation:CreateStack",
+                "cloudformation:DeleteStack",
+                "cloudformation:DescribeChangeSet",
+                "cloudformation:DescribeStackEvents",
+                "cloudformation:DescribeStackResource",
+                "cloudformation:DescribeStackResources",
+                "cloudformation:DescribeStacks",
+                "cloudformation:ExecuteChangeSet",
+                "cloudformation:GetTemplate",
+                "cloudformation:UpdateStack",
+                "cloudformation:ListStacks",
+                "cloudformation:ListStackResources",
+                "cloudformation:DeleteStackSet",
+                "cloudformation:DescribeStackSet",
+                "cloudformation:UpdateStackSet",
+                "cloudformation:TagResource",
+                "cloudformation:UntagResource"
+              ],
+              "Resource": [
+                "arn:aws:cloudformation:*:*:stack/amplify-*"
+              ]
+            },
+            {
+              "Sid": "CLIManageviaCFNPolicy",
+              "Effect": "Allow",
+              "Action": [
+                "iam:ListRoleTags",
+                "iam:TagRole",
+                "iam:AttachRolePolicy",
+                "iam:CreatePolicy",
+                "iam:DeletePolicy",
+                "iam:DeleteRole",
+                "iam:DeleteRolePolicy",
+                "iam:DetachRolePolicy",
+                "iam:PutRolePolicy",
+                "iam:UntagRole",
+                "iam:UpdateRole",
+                "iam:GetRole",
+                "iam:GetPolicy",
+                "iam:GetRolePolicy",
+                "iam:PassRole",
+                "iam:ListPolicyVersions",
+                "iam:CreatePolicyVersion",
+                "iam:DeletePolicyVersion",
+                "iam:CreateRole",
+                "iam:ListRolePolicies",
+                "iam:PutRolePermissionsBoundary",
+                "iam:DeleteRolePermissionsBoundary",
+                "appsync:CreateApiKey",
+                "appsync:CreateDataSource",
+                "appsync:CreateFunction",
+                "appsync:CreateResolver",
+                "appsync:CreateType",
+                "appsync:DeleteApiKey",
+                "appsync:DeleteDataSource",
+                "appsync:DeleteFunction",
+                "appsync:DeleteResolver",
+                "appsync:DeleteType",
+                "appsync:GetDataSource",
+                "appsync:GetFunction",
+                "appsync:GetIntrospectionSchema",
+                "appsync:GetResolver",
+                "appsync:GetSchemaCreationStatus",
+                "appsync:GetType",
+                "appsync:GraphQL",
+                "appsync:ListApiKeys",
+                "appsync:ListDataSources",
+                "appsync:ListFunctions",
+                "appsync:ListGraphqlApis",
+                "appsync:ListResolvers",
+                "appsync:ListResolversByFunction",
+                "appsync:ListTypes",
+                "appsync:StartSchemaCreation",
+                "appsync:UntagResource",
+                "appsync:UpdateApiKey",
+                "appsync:UpdateDataSource",
+                "appsync:UpdateFunction",
+                "appsync:UpdateResolver",
+                "appsync:UpdateType",
+                "appsync:TagResource",
+                "appsync:CreateGraphqlApi",
+                "appsync:DeleteGraphqlApi",
+                "appsync:GetGraphqlApi",
+                "appsync:ListTagsForResource",
+                "appsync:UpdateGraphqlApi",
+                "apigateway:DELETE",
+                "apigateway:GET",
+                "apigateway:PATCH",
+                "apigateway:POST",
+                "apigateway:PUT",
+                "cognito-idp:CreateUserPool",
+                "cognito-identity:CreateIdentityPool",
+                "cognito-identity:DeleteIdentityPool",
+                "cognito-identity:DescribeIdentity",
+                "cognito-identity:DescribeIdentityPool",
+                "cognito-identity:SetIdentityPoolRoles",
+                "cognito-identity:GetIdentityPoolRoles",
+                "cognito-identity:UpdateIdentityPool",
+                "cognito-idp:CreateUserPoolClient",
+                "cognito-idp:DeleteUserPool",
+                "cognito-idp:DeleteUserPoolClient",
+                "cognito-idp:DescribeUserPool",
+                "cognito-idp:DescribeUserPoolClient",
+                "cognito-idp:ListTagsForResource",
+                "cognito-idp:ListUserPoolClients",
+                "cognito-idp:UpdateUserPoolClient",
+                "cognito-idp:CreateGroup",
+                "cognito-idp:DeleteGroup",
+                "cognito-identity:TagResource",
+                "cognito-idp:TagResource",
+                "cognito-idp:UpdateUserPool",
+                "cognito-idp:SetUserPoolMfaConfig",
+                "lambda:AddPermission",
+                "lambda:CreateFunction",
+                "lambda:DeleteFunction",
+                "lambda:GetFunction",
+                "lambda:GetFunctionConfiguration",
+                "lambda:InvokeAsync",
+                "lambda:InvokeFunction",
+                "lambda:RemovePermission",
+                "lambda:UpdateFunctionCode",
+                "lambda:UpdateFunctionConfiguration",
+                "lambda:ListTags",
+                "lambda:TagResource",
+                "lambda:UntagResource",
+                "lambda:AddLayerVersionPermission",
+                "lambda:CreateEventSourceMapping",
+                "lambda:DeleteEventSourceMapping",
+                "lambda:DeleteLayerVersion",
+                "lambda:GetEventSourceMapping",
+                "lambda:GetLayerVersion",
+                "lambda:ListEventSourceMappings",
+                "lambda:ListLayerVersions",
+                "lambda:PublishLayerVersion",
+                "lambda:RemoveLayerVersionPermission",
+                "lambda:UpdateEventSourceMapping",
+                "dynamodb:CreateTable",
+                "dynamodb:DeleteItem",
+                "dynamodb:DeleteTable",
+                "dynamodb:DescribeContinuousBackups",
+                "dynamodb:DescribeTable",
+                "dynamodb:DescribeTimeToLive",
+                "dynamodb:ListStreams",
+                "dynamodb:PutItem",
+                "dynamodb:TagResource",
+                "dynamodb:ListTagsOfResource",
+                "dynamodb:UntagResource",
+                "dynamodb:UpdateContinuousBackups",
+                "dynamodb:UpdateItem",
+                "dynamodb:UpdateTable",
+                "dynamodb:UpdateTimeToLive",
+                "s3:CreateBucket",
+                "s3:ListBucket",
+                "s3:PutBucketAcl",
+                "s3:PutBucketCORS",
+                "s3:PutBucketNotification",
+                "s3:PutBucketPolicy",
+                "s3:PutBucketWebsite",
+                "s3:PutObjectAcl",
+                "cloudfront:CreateCloudFrontOriginAccessIdentity",
+                "cloudfront:CreateDistribution",
+                "cloudfront:DeleteCloudFrontOriginAccessIdentity",
+                "cloudfront:DeleteDistribution",
+                "cloudfront:GetCloudFrontOriginAccessIdentity",
+                "cloudfront:GetCloudFrontOriginAccessIdentityConfig",
+                "cloudfront:GetDistribution",
+                "cloudfront:GetDistributionConfig",
+                "cloudfront:TagResource",
+                "cloudfront:UntagResource",
+                "cloudfront:UpdateCloudFrontOriginAccessIdentity",
+                "cloudfront:UpdateDistribution",
+                "events:DeleteRule",
+                "events:DescribeRule",
+                "events:ListRuleNamesByTarget",
+                "events:PutRule",
+                "events:PutTargets",
+                "events:RemoveTargets",
+                "mobiletargeting:GetApp",
+                "kinesis:AddTagsToStream",
+                "kinesis:CreateStream",
+                "kinesis:DeleteStream",
+                "kinesis:DescribeStream",
+                "kinesis:DescribeStreamSummary",
+                "kinesis:ListTagsForStream",
+                "kinesis:PutRecords",
+                "es:AddTags",
+                "es:CreateElasticsearchDomain",
+                "es:DeleteElasticsearchDomain",
+                "es:DescribeElasticsearchDomain",
+                "es:UpdateElasticsearchDomainConfig",
+                "s3:PutEncryptionConfiguration",
+                "s3:PutBucketPublicAccessBlock"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "ForAnyValue:StringEquals": {
+                  "aws:CalledVia": [
+                    "cloudformation.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "CLISDKCalls",
+              "Effect": "Allow",
+              "Action": [
+                "appsync:GetIntrospectionSchema",
+                "appsync:GraphQL",
+                "appsync:UpdateApiKey",
+                "appsync:ListApiKeys",
+                "amplify:*",
+                "amplifybackend:*",
+                "amplifyuibuilder:*",
+                "sts:AssumeRole",
+                "mobiletargeting:*",
+                "cognito-idp:AdminAddUserToGroup",
+                "cognito-idp:AdminCreateUser",
+                "cognito-idp:CreateGroup",
+                "cognito-idp:DeleteGroup",
+                "cognito-idp:DeleteUser",
+                "cognito-idp:ListUsers",
+                "cognito-idp:AdminGetUser",
+                "cognito-idp:ListUsersInGroup",
+                "cognito-idp:AdminDisableUser",
+                "cognito-idp:AdminRemoveUserFromGroup",
+                "cognito-idp:AdminResetUserPassword",
+                "cognito-idp:AdminListGroupsForUser",
+                "cognito-idp:ListGroups",
+                "cognito-idp:AdminListUserAuthEvents",
+                "cognito-idp:AdminDeleteUser",
+                "cognito-idp:AdminConfirmSignUp",
+                "cognito-idp:AdminEnableUser",
+                "cognito-idp:AdminUpdateUserAttributes",
+                "cognito-idp:DescribeIdentityProvider",
+                "cognito-idp:DescribeUserPool",
+                "cognito-idp:DeleteUserPool",
+                "cognito-idp:DescribeUserPoolClient",
+                "cognito-idp:CreateUserPool",
+                "cognito-idp:CreateUserPoolClient",
+                "cognito-idp:UpdateUserPool",
+                "cognito-idp:AdminSetUserPassword",
+                "cognito-idp:ListUserPools",
+                "cognito-idp:ListUserPoolClients",
+                "cognito-idp:ListIdentityProviders",
+                "cognito-idp:GetUserPoolMfaConfig",
+                "cognito-identity:GetIdentityPoolRoles",
+                "cognito-identity:SetIdentityPoolRoles",
+                "cognito-identity:CreateIdentityPool",
+                "cognito-identity:DeleteIdentityPool",
+                "cognito-identity:ListIdentityPools",
+                "cognito-identity:DescribeIdentityPool",
+                "dynamodb:DescribeTable",
+                "dynamodb:ListTables",
+                "lambda:GetFunction",
+                "lambda:CreateFunction",
+                "lambda:AddPermission",
+                "lambda:DeleteFunction",
+                "lambda:DeleteLayerVersion",
+                "lambda:InvokeFunction",
+                "lambda:ListLayerVersions",
+                "iam:PutRolePolicy",
+                "iam:CreatePolicy",
+                "iam:AttachRolePolicy",
+                "iam:ListPolicyVersions",
+                "iam:ListAttachedRolePolicies",
+                "iam:CreateRole",
+                "iam:PassRole",
+                "iam:ListRolePolicies",
+                "iam:DeleteRolePolicy",
+                "iam:CreatePolicyVersion",
+                "iam:DeletePolicyVersion",
+                "iam:DeleteRole",
+                "iam:DetachRolePolicy",
+                "cloudformation:ListStacks",
+                "cloudformation:DescribeStacks",
+                "sns:CreateSMSSandboxPhoneNumber",
+                "sns:GetSMSSandboxAccountStatus",
+                "sns:VerifySMSSandboxPhoneNumber",
+                "sns:DeleteSMSSandboxPhoneNumber",
+                "sns:ListSMSSandboxPhoneNumbers",
+                "sns:ListOriginationNumbers",
+                "rekognition:DescribeCollection",
+                "logs:DescribeLogStreams",
+                "logs:GetLogEvents",
+                "lex:GetBot",
+                "lex:GetBuiltinIntent",
+                "lex:GetBuiltinIntents",
+                "lex:GetBuiltinSlotTypes",
+                "cloudformation:GetTemplateSummary",
+                "codecommit:GitPull",
+                "cloudfront:GetCloudFrontOriginAccessIdentity",
+                "cloudfront:GetCloudFrontOriginAccessIdentityConfig",
+                "polly:DescribeVoices"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AmplifySSMCalls",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:PutParameter",
+                "ssm:DeleteParameter",
+                "ssm:GetParametersByPath",
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+                "ssm:DeleteParameters"
+              ],
+              "Resource": "arn:aws:ssm:*:*:parameter/amplify/*"
+            },
+            {
+              "Sid": "GeoPowerUser",
+              "Effect": "Allow",
+              "Action": [
+                "geo:*"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AmplifyEcrSDKCalls",
+              "Effect": "Allow",
+              "Action": [
+                "ecr:DescribeRepositories"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AmplifyStorageSDKCalls",
+              "Effect": "Allow",
+              "Action": [
+                "s3:CreateBucket",
+                "s3:DeleteBucket",
+                "s3:DeleteBucketPolicy",
+                "s3:DeleteBucketWebsite",
+                "s3:DeleteObject",
+                "s3:DeleteObjectVersion",
+                "s3:GetBucketLocation",
+                "s3:GetObject",
+                "s3:ListAllMyBuckets",
+                "s3:ListBucket",
+                "s3:ListBucketVersions",
+                "s3:PutBucketAcl",
+                "s3:PutBucketCORS",
+                "s3:PutBucketNotification",
+                "s3:PutBucketPolicy",
+                "s3:PutBucketVersioning",
+                "s3:PutBucketWebsite",
+                "s3:PutEncryptionConfiguration",
+                "s3:PutLifecycleConfiguration",
+                "s3:PutObject",
+                "s3:PutObjectAcl"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AmplifySSRCalls",
+              "Effect": "Allow",
+              "Action": [
+                "cloudfront:CreateCloudFrontOriginAccessIdentity",
+                "cloudfront:CreateDistribution",
+                "cloudfront:CreateInvalidation",
+                "cloudfront:GetDistribution",
+                "cloudfront:GetDistributionConfig",
+                "cloudfront:ListCloudFrontOriginAccessIdentities",
+                "cloudfront:ListDistributions",
+                "cloudfront:ListDistributionsByLambdaFunction",
+                "cloudfront:ListDistributionsByWebACLId",
+                "cloudfront:ListFieldLevelEncryptionConfigs",
+                "cloudfront:ListFieldLevelEncryptionProfiles",
+                "cloudfront:ListInvalidations",
+                "cloudfront:ListPublicKeys",
+                "cloudfront:ListStreamingDistributions",
+                "cloudfront:UpdateDistribution",
+                "cloudfront:TagResource",
+                "cloudfront:UntagResource",
+                "cloudfront:ListTagsForResource",
+                "cloudfront:DeleteDistribution",
+                "iam:AttachRolePolicy",
+                "iam:CreateRole",
+                "iam:CreateServiceLinkedRole",
+                "iam:GetRole",
+                "iam:PutRolePolicy",
+                "iam:PassRole",
+                "lambda:CreateFunction",
+                "lambda:EnableReplication",
+                "lambda:DeleteFunction",
+                "lambda:GetFunction",
+                "lambda:GetFunctionConfiguration",
+                "lambda:PublishVersion",
+                "lambda:UpdateFunctionCode",
+                "lambda:UpdateFunctionConfiguration",
+                "lambda:ListTags",
+                "lambda:TagResource",
+                "lambda:UntagResource",
+                "route53:ChangeResourceRecordSets",
+                "route53:ListHostedZonesByName",
+                "route53:ListResourceRecordSets",
+                "s3:CreateBucket",
+                "s3:GetAccelerateConfiguration",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:PutAccelerateConfiguration",
+                "s3:PutBucketPolicy",
+                "s3:PutObject",
+                "s3:PutBucketTagging",
+                "s3:GetBucketTagging",
+                "lambda:ListEventSourceMappings",
+                "lambda:CreateEventSourceMapping",
+                "iam:UpdateAssumeRolePolicy",
+                "iam:DeleteRolePolicy",
+                "sqs:CreateQueue",
+                "sqs:DeleteQueue",
+                "sqs:GetQueueAttributes",
+                "sqs:SetQueueAttributes",
+                "amplify:GetApp",
+                "amplify:GetBranch",
+                "amplify:UpdateApp",
+                "amplify:UpdateBranch"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AmplifySSRViewLogGroups",
+              "Effect": "Allow",
+              "Action": "logs:DescribeLogGroups",
+              "Resource": "arn:aws:logs:*:*:log-group:*"
+            },
+            {
+              "Sid": "AmplifySSRCreateLogGroup",
+              "Effect": "Allow",
+              "Action": "logs:CreateLogGroup",
+              "Resource": "arn:aws:logs:*:*:log-group:/aws/amplify/*"
+            },
+            {
+              "Sid": "AmplifySSRPushLogs",
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+              ],
+              "Resource": "arn:aws:logs:*:*:log-group:/aws/amplify/*:log-stream:*"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::1234567890:role/us-east-1_gwbbcl3cp_Manage-only",
+      "name": "us-east-1_gwbbcl3cp_Manage-only",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "CognitoAssumeRolePolicy",
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:12345678-1234-1234-1234-00000001"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AmplifyBackendManageOnlyPolicy",
+              "Effect": "Allow",
+              "Action": [
+                "amplifybackend:getBackend*"
+              ],
+              "Resource": [
+                "*"
+              ]
+            },
+            {
+              "Sid": "UiBuilderGetMetadata",
+              "Effect": "Allow",
+              "Action": [
+                "amplifyuibuilder:GetMetadata"
+              ],
+              "Resource": [
+                "arn:aws:amplifyuibuilder:us-east-1:*:/app/dul9d01do0y1k/environment/*/metadata"
+              ]
+            },
+            {
+              "Sid": "AmplifyGetPolicy",
+              "Effect": "Allow",
+              "Action": [
+                "amplify:Get*",
+                "amplify:List*"
+              ],
+              "Resource": [
+                "arn:aws:amplify:us-east-1:*:apps/dul9d01do0y1k",
+                "arn:aws:amplify:us-east-1:*:apps/dul9d01do0y1k/*"
+              ]
+            },
+            {
+              "Sid": "S3GetPolicy",
+              "Effect": "Allow",
+              "Action": [
+                "s3:getObject"
+              ],
+              "Resource": [
+                "arn:aws:s3:::amplify-test-staging-da33e-deployment/studio-backend/*",
+                "arn:aws:s3:::amplify-test-staging-da33e-deployment/models/*"
+              ]
+            },
+            {
+              "Sid": "AuthManagePolicy",
+              "Effect": "Allow",
+              "Action": [
+                "cognito-idp:AdminAddUserToGroup",
+                "cognito-idp:AdminCreateUser",
+                "cognito-idp:CreateGroup",
+                "cognito-idp:DeleteGroup",
+                "cognito-idp:DeleteUser",
+                "cognito-idp:ListUsers",
+                "cognito-idp:AdminGetUser",
+                "cognito-idp:ListUsersInGroup",
+                "cognito-idp:AdminDisableUser",
+                "cognito-idp:AdminRemoveUserFromGroup",
+                "cognito-idp:AdminResetUserPassword",
+                "cognito-idp:AdminListGroupsForUser",
+                "cognito-idp:ListGroups",
+                "cognito-idp:AdminDeleteUser",
+                "cognito-idp:AdminListUserAuthEvents",
+                "cognito-idp:AdminDeleteUser",
+                "cognito-idp:AdminConfirmSignUp",
+                "cognito-idp:AdminEnableUser",
+                "cognito-idp:AdminUpdateUserAttributes",
+                "cognito-idp:DescribeUserPool"
+              ],
+              "Resource": [
+                "arn:aws:cognito-idp:us-east-1:*:userpool/us-east-1_1w6H5dObA"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "cognito_identity_pools": [
+    {
+      "id": "us-east-1:12345678-1234-1234-1234-00000002",
+      "name": "idpool_test2",
+      "config": {
+        "AllowUnauthenticatedIdentities": true,
+        "AllowClassicFlow": true,
+        "UnauthenticatedRoleArn": "arn:aws:iam::1234567890:role/service-role/unauth_test1",
+        "AuthenticatedRoleArn": "arn:aws:iam::1234567890:role/service-role/authrole_test1"
+      }
+    },
+    {
+      "id": "us-east-1:12345678-1234-1234-1234-00000006",
+      "name": "amplify_backend_manager_dd0ichtfaj035",
+      "config": {
+        "AllowUnauthenticatedIdentities": false,
+        "AllowClassicFlow": false,
+        "UnauthenticatedRoleArn": null,
+        "AuthenticatedRoleArn": "arn:aws:iam::1234567890:role/us-east-1_gR86QDjfJ-authRole"
+      }
+    },
+    {
+      "id": "us-east-1:12345678-1234-1234-1234-00000001",
+      "name": "amplify_backend_manager_dul9d01do0y1k",
+      "config": {
+        "AllowUnauthenticatedIdentities": false,
+        "AllowClassicFlow": false,
+        "UnauthenticatedRoleArn": null,
+        "AuthenticatedRoleArn": "arn:aws:iam::1234567890:role/us-east-1_gwbbcl3cp-authRole"
+      }
+    },
+    {
+      "id": "us-east-1:12345678-1234-1234-1234-00000000",
+      "name": "czpool",
+      "config": {
+        "AllowUnauthenticatedIdentities": true,
+        "AllowClassicFlow": true,
+        "UnauthenticatedRoleArn": "arn:aws:iam::1234567890:role/service-role/cognito-test-high-permission",
+        "AuthenticatedRoleArn": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f",
+            "name": "identityPoolNoVulnDynamoDBLimited",
+            "config": {
+                "AllowUnauthenticatedIdentities": false,
+                "AllowClassicFlow": true,
+                "UnauthenticatedRoleArn": null,
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/authRoleNoVulnDynamoDBLimited"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/authRoleNoVulnDynamoDBLimited",
+            "name": "authRoleNoVulnDynamoDBLimited",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "safeAuthPolicyDynamoDBGetSpecificItem",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "dynamodb:GetItem",
+                                "Resource": "arn:aws:dynamodb:us-east-1:123456789012:table/MySafeTable",
+                                "Condition": {
+                                    "ForAllValues:StringEquals": {
+                                        "dynamodb:LeadingKeys": [
+                                            "${cognito-identity.amazonaws.com:sub}"
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "expected_result": "no_vulnerable"
+}

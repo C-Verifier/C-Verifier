@@ -1,0 +1,244 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-2:a1b2c3d4-e5f6-7890-1234-567890abcdef",
+            "name": "SkyWatchAlertClassicPool",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": true,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/SkyWatchUnauthForecastViewRole",
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/SkyWatchAuthUserAlertPrefsRole"
+            }
+        },
+        {
+            "id": "us-east-1:b2c3d4e5-f6a7-89b0-c1d2-e3f456abcdef0",
+            "name": "MeteorologyPartnerSecurePool",
+            "config": {
+                "AllowUnauthenticatedIdentities": false,
+                "AllowClassicFlow": false,
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/PartnerSecureBaseRole"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/SkyWatchUnauthForecastViewRole",
+            "name": "SkyWatchUnauthForecastViewRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-2:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:InvokeFunction"
+                            ],
+                            "Resource": "arn:aws:lambda:us-east-2:123456789012:function:GetLocalPublicForecastFunction"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/SkyWatchAuthUserAlertPrefsRole",
+            "name": "SkyWatchAuthUserAlertPrefsRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-2:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:InvokeFunction"
+                            ],
+                            "Resource": "arn:aws:lambda:us-east-2:123456789012:function:SetUserWeatherAlertsFunction"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "dynamodb:GetItem",
+                                "dynamodb:PutItem"
+                            ],
+                            "Resource": "arn:aws:dynamodb:us-east-2:123456789012:table/UserAlertPreferences"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/HistoricalWeatherDataImportTestRole",
+            "name": "HistoricalWeatherDataImportTestRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-2:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:PutObject",
+                                "s3:ListBucket",
+                                "s3:GetObject"
+                            ],
+                            "Resource": [
+                                "arn:aws:s3:::weather-data-lake-raw-uploads/*",
+                                "arn:aws:s3:::weather-data-lake-raw-uploads"
+                            ]
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "dynamodb:BatchWriteItem",
+                                "dynamodb:Scan"
+                            ],
+                            "Resource": "arn:aws:dynamodb:us-east-2:123456789012:table/HistoricalClimateData"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/PartnerSecureBaseRole",
+            "name": "PartnerSecureBaseRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:b2c3d4e5-f6a7-89b0-c1d2-e3f456abcdef0"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:InvokeFunction"
+                            ],
+                            "Resource": "arn:aws:lambda:us-east-1:123456789012:function:ValidatePartnerTokenFunction"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/WeatherDataPartnerIngestRole",
+            "name": "WeatherDataPartnerIngestRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:b2c3d4e5-f6a7-89b0-c1d2-e3f456abcdef0"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:PutObject"
+                            ],
+                            "Resource": "arn:aws:s3:::partner-weather-data-feeds/*"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:InvokeFunction"
+                            ],
+                            "Resource": "arn:aws:lambda:us-east-1:123456789012:function:ProcessIncomingPartnerDataFunction"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "expected_result": "vulnerable"
+}

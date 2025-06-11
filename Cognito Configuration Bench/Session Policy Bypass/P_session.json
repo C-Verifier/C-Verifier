@@ -1,0 +1,17 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "appsync:*", "cloudwatch:*", "cognito-idp:*", "cognito-identity:GetCredentialsForIdentity",
+        "comprehend:*", "dynamodb:*", "elasticbeanstalk:*", "firehose:*", "gamelift:*",
+        "iot:*", "iotdata:*", "iotsecuredtunneling:*", "kinesis:*", "kinesisvideo:*",
+        "lambda:*", "lex:*", "lexv2:*", "logs:*", "mailmanager:*", "personalize:*",
+        "mobiletargeting:*", "polly:*", "s3:*", "sdb:*", "ses:*", "sesv2:*", "sns:*",
+        "sqs:*", "sts:*", "transcribe:*", "translate:*","cognito-sync:*","mobileanalytics:PutEvents","execute-api:Invoke"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "eu-west-1:a1b2c3d4-e5f6-7890-1234-567890abcdef",
+            "name": "NexusGamingPool",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": true,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/NexusGamingUnauthGuestAccessRole",
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/NexusGamingAuthPlayerRole"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/NexusGamingUnauthGuestAccessRole",
+            "name": "NexusGamingUnauthGuestAccessRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "eu-west-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:InvokeFunction"
+                            ],
+                            "Resource": "arn:aws:lambda:eu-west-1:123456789012:function:GetServerStatusFunction"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/NexusGamingAuthPlayerRole",
+            "name": "NexusGamingAuthPlayerRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "eu-west-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:InvokeFunction"
+                            ],
+                            "Resource": "arn:aws:lambda:eu-west-1:123456789012:function:MatchmakingServiceFunction"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "dynamodb:GetItem",
+                                "dynamodb:UpdateItem"
+                            ],
+                            "Resource": "arn:aws:dynamodb:eu-west-1:123456789012:table/PlayerProfilesTable"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/GameModerationToolsRole",
+            "name": "GameModerationToolsRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "eu-west-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "dynamodb:DeleteItem",
+                                "dynamodb:UpdateItem",
+                                "dynamodb:Scan"
+                            ],
+                            "Resource": [
+                                "arn:aws:dynamodb:eu-west-1:123456789012:table/PlayerProfilesTable",
+                                "arn:aws:dynamodb:eu-west-1:123456789012:table/ChatLogsTable"
+                            ]
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:InvokeFunction"
+                            ],
+                            "Resource": "arn:aws:lambda:eu-west-1:123456789012:function:IssuePlayerWarningFunction"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "expected_result": "vulnerable"
+}

@@ -1,0 +1,55 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:e3f4a5b6-c7d8-e9f0-a1b2-c3d4e5f6a7b8",
+            "name": "PoolDelta7KL",
+            "config": {
+                "AllowUnauthenticatedIdentities": false,
+                "AllowClassicFlow": false,
+                "UnauthenticatedRoleArn": null,
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/RoleFoxtrot9MN"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/RoleFoxtrot9MN",
+            "name": "RoleFoxtrot9MN",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:e3f4a5b6-c7d8-e9f0-a1b2-c3d4e5f6a7b8"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "geo:GetDevicePositionHistory"
+                            ],
+                            "Resource": "arn:aws:geo:us-east-1:123456789012:tracker/trackerAsset01"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "expected_result": "no_vulnerable"
+}

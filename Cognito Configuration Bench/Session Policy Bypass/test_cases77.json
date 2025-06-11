@@ -1,0 +1,53 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef",
+            "name": "ClassicFlowAuthOnlyExample",
+            "config": {
+                "AllowUnauthenticatedIdentities": false,
+                "AllowClassicFlow": true,
+                "UnauthenticatedRoleArn": null,
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/Cognito_ClassicFlowAuthOnlyRole"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/Cognito_ClassicFlowAuthOnlyRole",
+            "name": "Cognito_ClassicFlowAuthOnlyRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": "dynamodb:scan",
+                            "Resource": "arn:aws:dynamodb:us-east-1:123456789012:table/ProductCatalog"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "expected_result": "no_vulnerable"
+}

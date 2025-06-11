@@ -1,0 +1,395 @@
+{
+  "cognito_identity_pools": [
+    {
+      "id": "sa-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef",
+      "name": "LatAmOperationsClassicPool",
+      "config": {
+        "AllowUnauthenticatedIdentities": true,
+        "AllowClassicFlow": true,
+        "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/LatAmOps_Unauth_Role",
+        "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/LatAmOps_Auth_Role"
+      }
+    },
+    {
+      "id": "ap-southeast-1:b2c3d4e5-f6a7-89b0-c1d2-e3f456abcdef0",
+      "name": "APACSecureAnalyticsPool",
+      "config": {
+        "AllowUnauthenticatedIdentities": false,
+        "AllowClassicFlow": false,
+        "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/APACAnalytics_SecureAuth_Role"
+      }
+    },
+    {
+      "id": "ca-central-1:c3d4e5f6-a7b8-90c1-d2e3-f456abcdef01",
+      "name": "CanadaDevSandboxClassicPool",
+      "config": {
+        "AllowUnauthenticatedIdentities": true,
+        "AllowClassicFlow": true,
+        "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/CanadaDevSandbox_Unauth_Role",
+        "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/CanadaDevSandbox_Auth_Role_VulnerableTrust"
+      }
+    }
+  ],
+  "roles": [
+    {
+      "arn": "arn:aws:iam::123456789012:role/LatAmOps_Unauth_Role",
+      "name": "LatAmOps_Unauth_Role",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "sa-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "lambda:InvokeFunction"
+              ],
+              "Resource": "arn:aws:lambda:sa-east-1:123456789012:function:GetLatAmPublicDataFeedFunction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/LatAmOps_Auth_Role",
+      "name": "LatAmOps_Auth_Role",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "sa-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:PutItem"
+              ],
+              "Resource": "arn:aws:dynamodb:sa-east-1:123456789012:table/LatAmUserProjectData"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/APACAnalytics_SecureAuth_Role",
+      "name": "APACAnalytics_SecureAuth_Role",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "ap-southeast-1:b2c3d4e5-f6a7-89b0-c1d2-e3f456abcdef0"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "lambda:InvokeFunction"
+              ],
+              "Resource": "arn:aws:lambda:ap-southeast-1:123456789012:function:RunSecureAnalyticsQueryFunction"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                 "s3:GetObject"
+              ],
+              "Resource": "arn:aws:s3:::apac-secure-analytics-input-data/*"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/CanadaDevSandbox_Unauth_Role",
+      "name": "CanadaDevSandbox_Unauth_Role",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "ca-central-1:c3d4e5f6-a7b8-90c1-d2e3-f456abcdef01"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject"
+              ],
+              "Resource": "arn:aws:s3:::canada-dev-sandbox-public-assets/readme.txt"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/CanadaDevSandbox_Auth_Role_VulnerableTrust",
+      "name": "CanadaDevSandbox_Auth_Role_VulnerableTrust",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "ca-central-1:c3d4e5f6-a7b8-90c1-d2e3-f456abcdef01"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": ["authenticated", "unauthenticated"]
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "lambda:InvokeFunction",
+                "lambda:UpdateFunctionCode"
+              ],
+              "Resource": "arn:aws:lambda:ca-central-1:123456789012:function:DevSandbox-*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:PutObject",
+                "s3:GetObject"
+              ],
+              "Resource": "arn:aws:s3:::canada-dev-sandbox-user-projects/${cognito-identity.amazonaws.com:sub}/*"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/CrossPool_GlobalAdmin_TestRole",
+      "name": "CrossPool_GlobalAdmin_TestRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "sa-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef" 
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          },
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "ca-central-1:c3d4e5f6-a7b8-90c1-d2e3-f456abcdef01" 
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "*",
+              "Resource": "*"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/Legacy_DataArchive_TestRole",
+      "name": "Legacy_DataArchive_TestRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "sa-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef" 
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:DeleteObject"
+              ],
+              "Resource": [
+                "arn:aws:s3:::latam-ops-legacy-archive/*",
+                "arn:aws:s3:::latam-ops-legacy-archive"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:Scan",
+                "dynamodb:Query",
+                "dynamodb:BatchGetItem"
+              ],
+              "Resource": "arn:aws:dynamodb:sa-east-1:123456789012:table/ArchivedLatAmOpsData"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/Forgotten_Backup_TestRole",
+      "name": "Forgotten_Backup_TestRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "eu-west-3:deadc0de-0000-1111-2222-deadc0de0000" 
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:ListBucket"
+              ],
+              "Resource": [
+                "arn:aws:s3:::forgotten-systems-backup-data/*",
+                "arn:aws:s3:::forgotten-systems-backup-data"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:BatchWriteItem"
+              ],
+              "Resource": "arn:aws:dynamodb:eu-west-3:123456789012:table/OrphanedBackupStatus"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

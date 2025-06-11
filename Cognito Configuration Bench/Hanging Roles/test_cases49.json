@@ -1,0 +1,173 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "ap-northeast-2:a1b2c3d4-e5f6-7890-1234-567890abcdef",
+            "name": "SeoulSmartHomeClassicPool",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": true,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/SeoulHomeUnauthDeviceStatusRole",
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/SeoulHomeAuthUserControlRole"
+            }
+        },
+        {
+            "id": "ap-northeast-1:b2c3d4e5-f6a7-89b0-c1d2-e3f456abcdef0",
+            "name": "TokyoDeviceManagementClassicPool",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": true
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/SeoulHomeUnauthDeviceStatusRole",
+            "name": "SeoulHomeUnauthDeviceStatusRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "ap-northeast-2:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "iot:GetThingShadow"
+                            ],
+                            "Resource": "arn:aws:iot:ap-northeast-2:123456789012:thing/public-demo-device"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/SeoulHomeAuthUserControlRole",
+            "name": "SeoulHomeAuthUserControlRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "ap-northeast-2:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "iot:UpdateThingShadow"
+                            ],
+                            "Resource": "arn:aws:iot:ap-northeast-2:123456789012:thing/user-home-${cognito-identity.amazonaws.com:sub}/*"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:InvokeFunction"
+                            ],
+                            "Resource": "arn:aws:lambda:ap-northeast-2:123456789012:function:ExecuteHomeSceneFunction"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/CrossRegionalDeviceAdminRole",
+            "name": "CrossRegionalDeviceAdminRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "ap-northeast-1:b2c3d4e5-f6a7-89b0-c1d2-e3f456abcdef0"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    },
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "ap-northeast-2:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "iot:DescribeThing",
+                                "iot:DeleteThing",
+                                "iot:CreateThing",
+                                "iot:UpdateThing"
+                            ],
+                            "Resource": "arn:aws:iot:ap-northeast-1:123456789012:thing/*"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "dynamodb:PutItem",
+                                "dynamodb:DeleteItem",
+                                "dynamodb:Scan"
+                            ],
+                            "Resource": "arn:aws:dynamodb:ap-northeast-1:123456789012:table/GlobalDeviceRegistry"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "expected_result": "vulnerable"
+}

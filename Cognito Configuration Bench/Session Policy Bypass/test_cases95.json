@@ -1,0 +1,67 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
+            "name": "StackNameUserPoolIdentityPool",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": true,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/cognitoUnAuthorizedRole-Stack",
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/cognitoAuthorizedRole-Stack"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/cognitoUnAuthorizedRole-Stack",
+            "name": "cognitoUnAuthorizedRole-Stack",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": []
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/cognitoAuthorizedRole-Stack",
+            "name": "cognitoAuthorizedRole-Stack",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": []
+        }
+    ],
+    "expected_result": "no_vulnerable"
+}

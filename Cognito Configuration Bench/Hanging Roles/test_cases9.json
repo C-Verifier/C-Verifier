@@ -1,0 +1,152 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "ca-central-1:a1b2c3d4-e5f6-7890-1234-567890abcdef",
+            "name": "EcoWatcherPool",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": true,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/EcoWatcherUnauthObservationViewRole",
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/EcoWatcherAuthContributorRole"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/EcoWatcherUnauthObservationViewRole",
+            "name": "EcoWatcherUnauthObservationViewRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "ca-central-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "dynamodb:Query"
+                            ],
+                            "Resource": [
+                                "arn:aws:dynamodb:ca-central-1:123456789012:table/PublicWildlifeSightings",
+                                "arn:aws:dynamodb:ca-central-1:123456789012:table/PublicWildlifeSightings/index/DateIndex",
+                                "arn:aws:dynamodb:ca-central-1:123456789012:table/PublicWildlifeSightings/index/SpeciesIndex"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/EcoWatcherAuthContributorRole",
+            "name": "EcoWatcherAuthContributorRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "ca-central-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "dynamodb:PutItem"
+                            ],
+                            "Resource": "arn:aws:dynamodb:ca-central-1:123456789012:table/UserSubmittedObservations"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:PutObject"
+                            ],
+                            "Resource": "arn:aws:s3:::eco-watcher-observation-photos/submissions/${cognito-identity.amazonaws.com:sub}/*"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/ResearchDataExportRole",
+            "name": "ResearchDataExportRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "ca-central-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "dynamodb:Scan"
+                            ],
+                            "Resource": [
+                                "arn:aws:dynamodb:ca-central-1:123456789012:table/UserSubmittedObservations",
+                                "arn:aws:dynamodb:ca-central-1:123456789012:table/VerifiedObservationsDataset"
+                            ]
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "lambda:InvokeFunction"
+                            ],
+                            "Resource": "arn:aws:lambda:ca-central-1:123456789012:function:ExportDatasetForAnalysisFunction"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "expected_result": "vulnerable"
+}

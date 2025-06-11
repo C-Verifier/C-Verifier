@@ -1,0 +1,211 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f",
+            "name": "DataCatalogAdminPool",
+            "config": {
+                "AllowUnauthenticatedIdentities": false,
+                "AllowClassicFlow": true,
+                "UnauthenticatedRoleArn": null,
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/DataCatalogAdministratorRole"
+            }
+        },
+        {
+            "id": "us-east-1:c9d0e1f2-a3b4-c5d6-e7f8-a9b0c1d2e3f4",
+            "name": "MobileGameUserIdentities",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": false,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/MobileGameGuestPlayerRole",
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/MobileGameRegisteredPlayerRole"
+            }
+        },
+        {
+            "id": "us-east-1:d0e1f2a3-b4c5-d6e7-f8a9-b0c1d2e3f4a5",
+            "name": "IoTDeviceManagementPool",
+            "config": {
+                "AllowUnauthenticatedIdentities": false,
+                "AllowClassicFlow": false,
+                "UnauthenticatedRoleArn": null,
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/IoTDeviceManagerRole"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/DataCatalogAdministratorRole",
+            "name": "DataCatalogAdministratorRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "DataCatalogAdminGlueFullLeak",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "glue:*",
+                                "Resource": "*"
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": "s3:ListAllMyBuckets",
+                                "Resource": "*"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/MobileGameRegisteredPlayerRole",
+            "name": "MobileGameRegisteredPlayerRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:c9d0e1f2-a3b4-c5d6-e7f8-a9b0c1d2e3f4"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "MobileGamePlayerSecure",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "gamelift:StartGameSession",
+                                "Resource": "*"
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": "dynamodb:UpdateItem",
+                                "Resource": "arn:aws:dynamodb:us-east-1:123456789012:table/GamePlayerScores"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/MobileGameGuestPlayerRole",
+            "name": "MobileGameGuestPlayerRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:c9d0e1f2-a3b4-c5d6-e7f8-a9b0c1d2e3f4"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "MobileGameGuestSecure",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": "polly:SynthesizeSpeech",
+                                "Resource": "*"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/IoTDeviceManagerRole",
+            "name": "IoTDeviceManagerRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:d0e1f2a3-b4c5-d6e7-f8a9-b0c1d2e3f4a5"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "IoTManagerSecure",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "iot:UpdateThingShadow",
+                                    "iot:GetThingShadow"
+                                ],
+                                "Resource": "arn:aws:iot:us-east-1:123456789012:thing/*"
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": "iot:ListThings",
+                                "Resource": "*"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "expected_result": "vulnerable"
+}

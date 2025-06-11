@@ -1,0 +1,135 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f",
+            "name": "cognito_identity_pool_aws03",
+            "config": {
+                "AllowUnauthenticatedIdentities": false,
+                "AllowClassicFlow": false,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/cognitoUnauthRoleAWS03",
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/cognitoAuthRoleAWS03"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/cognitoAuthRoleAWS03",
+            "name": "cognitoAuthRoleAWS03",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": [
+                            "sts:AssumeRoleWithWebIdentity"
+                        ],
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "CognitoAuthorizedPolicy",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "s3:GetObject"
+                                ],
+                                "Resource": "arn:aws:s3:::secure-file-store-aws03/public/*"
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "s3:PutObject",
+                                    "s3:GetObject"
+                                ],
+                                "Resource": "arn:aws:s3:::secure-file-store-aws03/users/${cognito-identity.amazonaws.com:sub}/*"
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "lambda:InvokeFunction"
+                                ],
+                                "Resource": [
+                                    "arn:aws:lambda:us-east-1:123456789012:function:app-logic-handler-aws03-public",
+                                    "arn:aws:lambda:us-east-1:123456789012:function:app-logic-handler-aws03-user"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "arn": "arn:aws:iam::123456789012:role/cognitoUnauthRoleAWS03",
+            "name": "cognitoUnauthRoleAWS03",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": [
+                            "sts:AssumeRoleWithWebIdentity"
+                        ],
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "CognitoAuthorizedPolicy",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "s3:GetObject"
+                                ],
+                                "Resource": "arn:aws:s3:::secure-file-store-aws03/public/*"
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "lambda:InvokeFunction"
+                                ],
+                                "Resource": "arn:aws:lambda:us-east-1:123456789012:function:app-logic-handler-aws03-public"
+                            },
+                            {
+                                "Effect": "Deny",
+                                "Action": [
+                                    "lambda:InvokeFunction"
+                                ],
+                                "Resource": "arn:aws:lambda:us-east-1:123456789012:function:admin-*"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "expected_result": "no_vulnerable"
+}

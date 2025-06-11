@@ -1,0 +1,64 @@
+{
+  "expected_result": "not_vulnerable",
+  "cognito_identity_pools": [
+    {
+      "id": "us-east-1:b2c3d4e5-f6a7-8901-2345-67890abcdeff",
+      "name": "SecureUserProfilePool",
+      "config": {
+        "AllowUnauthenticatedIdentities": false,
+        "AllowClassicFlow": false,
+        "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/SecureUserProfile_AuthRole"
+      }
+    }
+  ],
+  "roles": [
+    {
+      "arn": "arn:aws:iam::123456789012:role/SecureUserProfile_AuthRole",
+      "name": "SecureUserProfile_AuthRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:b2c3d4e5-f6a7-8901-2345-67890abcdeff"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AuthS3UserSpecificData",
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject",
+                "s3:PutObject"
+              ],
+              "Resource": [
+                "arn:aws:s3:::userbucket/private/${cognito-identity.amazonaws.com:sub}/*"
+              ]
+            },
+            {
+              "Sid": "AuthLambdaInvokeProcessing",
+              "Effect": "Allow",
+              "Action": "lambda:InvokeFunction",
+              "Resource": "arn:aws:lambda:us-east-1:123456789012:function:userfunction-processUserData"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

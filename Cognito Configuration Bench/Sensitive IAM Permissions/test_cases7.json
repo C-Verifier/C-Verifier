@@ -1,0 +1,61 @@
+{
+    "expected_result": "vulnerable",
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef",
+            "name": "DevelopmentEnvironmentPool",
+            "config": {
+                "AllowUnauthenticatedIdentities": false,
+                "AllowClassicFlow": false,
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/DevOpsRole"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/DevOpsRole",
+            "name": "DevOpsRole",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Sid": "GlueDevEndpointUpdate",
+                            "Effect": "Allow",
+                            "Action": [
+                                "glue:updatedevendpoint*"
+                            ],
+                            "Resource": "*"
+                        },
+                        {
+                            "Sid": "LambdaDeployments",
+                            "Effect": "Allow",
+                            "Action": "lambda:UpdateFunctionCode",
+                            "Resource": "arn:aws:lambda:us-east-1:123456789012:function:*"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

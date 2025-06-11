@@ -1,0 +1,67 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b",
+            "name": "dev-myservice-CognitoUserIdentityPool",
+            "config": {
+                "AllowUnauthenticatedIdentities": false,
+                "AllowClassicFlow": false,
+                "UnauthenticatedRoleArn": null,
+                "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/CognitoUserAuthRole-dev-myservice"
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/CognitoUserAuthRole-dev-myservice",
+            "name": "CognitoUserAuthRole-dev-myservice",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "authenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "CognitoAuthorizedPolicy",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "mobileanalytics:PutEvents",
+                                    "cognito-sync:*",
+                                    "cognito-identity:*"
+                                ],
+                                "Resource": "*"
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "execute-api:Invoke"
+                                ],
+                                "Resource": "arn:aws:execute-api:us-east-1:123456789012:apigw789xyz/*/POST/hello"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "expected_result": "no_vulnerable"
+}

@@ -1,0 +1,72 @@
+{
+    "cognito_identity_pools": [
+        {
+            "id": "us-east-1:6f7a8b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c",
+            "name": "voixa_identity_pool",
+            "config": {
+                "AllowUnauthenticatedIdentities": true,
+                "AllowClassicFlow": true,
+                "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/us-east-1voixa-cognito-unauth",
+                "AuthenticatedRoleArn": null
+            }
+        }
+    ],
+    "roles": [
+        {
+            "arn": "arn:aws:iam::123456789012:role/us-east-1voixa-cognito-unauth",
+            "name": "us-east-1voixa-cognito-unauth",
+            "trust_policy_document": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Federated": "cognito-identity.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRoleWithWebIdentity",
+                        "Condition": {
+                            "StringEquals": {
+                                "cognito-identity.amazonaws.com:aud": "us-east-1:6f7a8b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c"
+                            },
+                            "ForAnyValue:StringLike": {
+                                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "permission_policy_documents": [
+                {
+                    "PolicyName": "us-east-1voixa-cognito-unauth-policy",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "mobileanalytics:PutEvents",
+                                    "cognito-sync:*"
+                                ],
+                                "Resource": [
+                                    "*"
+                                ]
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "dynamodb:*"
+                                ],
+                                "Resource": [
+                                    "arn:aws:dynamodb:us-east-1:123456789012:table/news",
+                                    "arn:aws:dynamodb:us-east-1:123456789012:table/site",
+                                    "arn:aws:dynamodb:us-east-1:123456789012:table/user_subscribe"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "expected_result": "no_vulnerable"
+}

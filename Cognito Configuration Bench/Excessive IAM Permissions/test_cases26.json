@@ -1,0 +1,100 @@
+{
+  "expected_result": "vulnerable",
+  "cognito_identity_pools": [
+    {
+      "id": "us-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef",
+      "name": "SupportTicketSystemPool",
+      "config": {
+        "AllowUnauthenticatedIdentities": true,
+        "AllowClassicFlow": false,
+        "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/SupportTicket_UserRole",
+        "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/SupportTicket_GuestSubmissionRole"
+      }
+    }
+  ],
+  "roles": [
+    {
+      "arn": "arn:aws:iam::123456789012:role/SupportTicket_UserRole",
+      "name": "SupportTicket_UserRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AuthDynamoDBTicketAccess",
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:Query"
+              ],
+              "Resource": "arn:aws:dynamodb:us-east-1:123456789012:table/usertable"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/SupportTicket_GuestSubmissionRole",
+      "name": "SupportTicket_GuestSubmissionRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "UnauthExcessiveLogging",
+              "Effect": "Allow",
+              "Action": "logs:CreateLogGroup",
+              "Resource": "*"
+            },
+            {
+               "Sid": "UnauthS3PublicUpload",
+               "Effect": "Allow",
+               "Action": "s3:PutObject",
+               "Resource": "arn:aws:s3:::userbucket/public/uploads/*"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "expected_result": "not_vulnerable",
+  "cognito_identity_pools": [
+    {
+      "id": "us-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef",
+      "name": "ContentCreatorsPlatformIdentityPool",
+      "config": {
+        "AllowUnauthenticatedIdentities": true,
+        "AllowClassicFlow": false,
+        "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/ContentCreators_AuthRole",
+        "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/ContentCreators_GuestRole"
+      }
+    },
+    {
+      "id": "us-east-1:b2c3d4e5-f6a7-8901-2345-67890abcdeff",
+      "name": "AnalyticsDashboardIdentityPool",
+      "config": {
+        "AllowUnauthenticatedIdentities": false,
+        "AllowClassicFlow": false,
+        "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/AnalyticsViewers_AuthRole"
+      }
+    }
+  ],
+  "roles": [
+    {
+      "arn": "arn:aws:iam::123456789012:role/ContentCreators_AuthRole",
+      "name": "ContentCreators_AuthRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AuthS3CreatorContent",
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject",
+                "s3:PutObject"
+              ],
+              "Resource": "arn:aws:s3:::userbucket/creators/${cognito-identity.amazonaws.com:sub}/*"
+            },
+            {
+              "Sid": "AuthLambdaPublish",
+              "Effect": "Allow",
+              "Action": "lambda:InvokeFunction",
+              "Resource": "arn:aws:lambda:us-east-1:123456789012:function:userfunction-publish"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/ContentCreators_GuestRole",
+      "name": "ContentCreators_GuestRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "UnauthS3PreviewRead",
+              "Effect": "Allow",
+              "Action": "s3:GetObject",
+              "Resource": "arn:aws:s3:::userbucket/public/previews/*"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/AnalyticsViewers_AuthRole",
+      "name": "AnalyticsViewers_AuthRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:b2c3d4e5-f6a7-8901-2345-67890abcdeff"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AuthDynamoDBReportQuery",
+              "Effect": "Allow",
+              "Action": "dynamodb:Query",
+              "Resource": "arn:aws:dynamodb:us-east-1:123456789012:table/usertable"
+            },
+            {
+              "Sid": "AuthLambdaReportGeneration",
+              "Effect": "Allow",
+              "Action": "lambda:InvokeFunction",
+              "Resource": "arn:aws:lambda:us-east-1:123456789012:function:userfunction-report-gen"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

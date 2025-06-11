@@ -1,0 +1,421 @@
+{
+  "cognito_identity_pools": [
+    {
+      "id": "eu-north-1:a1b2c3d4-e5f6-7890-1234-567890abcdef",
+      "name": "NordicIoTPlatformClassicPool",
+      "config": {
+        "AllowUnauthenticatedIdentities": true,
+        "AllowClassicFlow": true,
+        "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/NordicIoT_Unauth_Role",
+        "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/NordicIoT_Auth_Role"
+      }
+    },
+    {
+      "id": "us-east-1:b2c3d4e5-f6a7-89b0-c1d2-e3f456abcdef0",
+      "name": "USEastFinanceSecurePool",
+      "config": {
+        "AllowUnauthenticatedIdentities": false,
+        "AllowClassicFlow": false,
+        "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/USEastFinance_SecureAuth_BaseRole"
+      }
+    },
+    {
+      "id": "ap-south-1:c3d4e5f6-a7b8-90c1-d2e3-f456abcdef01",
+      "name": "IndiaRetailServicesClassicPool",
+      "config": {
+        "AllowUnauthenticatedIdentities": true,
+        "AllowClassicFlow": true,
+        "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/IndiaRetail_Unauth_Role",
+        "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/IndiaRetail_Auth_Role_OverlyTrusted"
+      }
+    }
+  ],
+  "roles": [
+    {
+      "arn": "arn:aws:iam::123456789012:role/NordicIoT_Unauth_Role",
+      "name": "NordicIoT_Unauth_Role",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "eu-north-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "iot:DescribeEndpoint"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/NordicIoT_Auth_Role",
+      "name": "NordicIoT_Auth_Role",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "eu-north-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "iot:GetThingShadow",
+                "iot:UpdateThingShadow"
+              ],
+              "Resource": "arn:aws:iot:eu-north-1:123456789012:thing/user-${cognito-identity.amazonaws.com:sub}-device-*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "lambda:InvokeFunction"
+              ],
+              "Resource": "arn:aws:lambda:eu-north-1:123456789012:function:ControlUserDeviceFunction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/USEastFinance_SecureAuth_BaseRole",
+      "name": "USEastFinance_SecureAuth_BaseRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:b2c3d4e5-f6a7-89b0-c1d2-e3f456abcdef0"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "lambda:InvokeFunction"
+              ],
+              "Resource": "arn:aws:lambda:us-east-1:123456789012:function:ExecuteSecureFinancialTransaction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/IndiaRetail_Unauth_Role",
+      "name": "IndiaRetail_Unauth_Role",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "ap-south-1:c3d4e5f6-a7b8-90c1-d2e3-f456abcdef01"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject"
+              ],
+              "Resource": "arn:aws:s3:::india-retail-public-promotions/*"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/IndiaRetail_Auth_Role_OverlyTrusted",
+      "name": "IndiaRetail_Auth_Role_OverlyTrusted",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "ap-south-1:c3d4e5f6-a7b8-90c1-d2e3-f456abcdef01"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": ["authenticated", "unauthenticated"]
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:PutItem",
+                "dynamodb:Query"
+              ],
+              "Resource": "arn:aws:dynamodb:ap-south-1:123456789012:table/IndiaRetailUserOrders"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "lambda:InvokeFunction"
+              ],
+              "Resource": "arn:aws:lambda:ap-south-1:123456789012:function:ProcessIndiaRetailOrderFunction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/service-role/CrossPool_SuperAdmin_TestRole",
+      "name": "CrossPool_SuperAdmin_TestRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "eu-north-1:a1b2c3d4-e5f6-7890-1234-567890abcdef" 
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          },
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "ap-south-1:c3d4e5f6-a7b8-90c1-d2e3-f456abcdef01" 
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          },
+          {
+             "Effect": "Allow",
+             "Principal": { "AWS": "arn:aws:iam::123456789012:role/service-role/CrossPool_SuperAdmin_TestRole" },
+             "Action": "sts:AssumeRole"
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "*",
+              "Resource": "*"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/service-role/PoolA_Full_IoT_Control_TestRole",
+      "name": "PoolA_Full_IoT_Control_TestRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "eu-north-1:a1b2c3d4-e5f6-7890-1234-567890abcdef" 
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "iot:*",
+              "Resource": "arn:aws:iot:eu-north-1:123456789012:*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": "lambda:InvokeFunction",
+              "Resource": "arn:aws:lambda:eu-north-1:123456789012:function:NordicIoTManagement-*"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/service-role/DanglingTrust_GlobalS3_TestRole",
+      "name": "DanglingTrust_GlobalS3_TestRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "ap-northeast-1:deadbeef-1234-abcd-5678-deadbeef1234" 
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "s3:*",
+              "Resource": "*"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/PoolB_Finance_Auditor_OverprivilegedRole",
+      "name": "PoolB_Finance_Auditor_OverprivilegedRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:b2c3d4e5-f6a7-89b0-c1d2-e3f456abcdef0" 
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "authenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+               "Effect": "Allow",
+               "Action": "dynamodb:Scan",
+               "Resource": "arn:aws:dynamodb:us-east-1:123456789012:table/*"
+            },
+            {
+               "Effect": "Allow",
+               "Action": "lambda:InvokeFunction",
+               "Resource": "arn:aws:lambda:us-east-1:123456789012:function:FinancialReportGenerator-*"
+            },
+            {
+               "Effect": "Allow",
+               "Action": "s3:GetObject",
+               "Resource": "arn:aws:s3:::finance-department-confidential-reports/*"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "expected_result": "vulnerable",
+  "cognito_identity_pools": [
+    {
+      "id": "us-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef",
+      "name": "MetricsCollectionPool",
+      "config": {
+        "AllowUnauthenticatedIdentities": true,
+        "AllowClassicFlow": false,
+        "AuthenticatedRoleArn": "arn:aws:iam::123456789012:role/MetricsCollection_AuthRole",
+        "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/MetricsCollection_GuestRole"
+      }
+    }
+  ],
+  "roles": [
+    {
+      "arn": "arn:aws:iam::123456789012:role/MetricsCollection_AuthRole",
+      "name": "MetricsCollection_AuthRole",
+      "trust_policy_document": { 
+        "Version": "2012-10-17",
+        "Statement": [{"Effect": "Allow", "Principal": { "Federated": "cognito-identity.amazonaws.com" },"Action": "sts:AssumeRoleWithWebIdentity","Condition": {"StringEquals": {"cognito-identity.amazonaws.com:aud": "us-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"},"ForAnyValue:StringLike": {"cognito-identity.amazonaws.com:amr": "authenticated"}}}]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            { "Sid": "AuthAllowedS3Access", "Effect": "Allow", "Action": "s3:GetObject", "Resource": "arn:aws:s3:::userbucket/*" },
+            { "Sid": "AuthExcessiveCloudWatch", "Effect": "Allow", "Action": "cloudwatch:PutMetricData", "Resource": "*" }
+          ]
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:iam::123456789012:role/MetricsCollection_GuestRole",
+      "name": "MetricsCollection_GuestRole",
+      "trust_policy_document": { 
+        "Version": "2012-10-17",
+        "Statement": [{"Effect": "Allow", "Principal": { "Federated": "cognito-identity.amazonaws.com" },"Action": "sts:AssumeRoleWithWebIdentity","Condition": {"StringEquals": {"cognito-identity.amazonaws.com:aud": "us-east-1:a1b2c3d4-e5f6-7890-1234-567890abcdef"},"ForAnyValue:StringLike": {"cognito-identity.amazonaws.com:amr": "unauthenticated"}}}]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+             { "Sid": "UnauthS3PublicRead", "Effect": "Allow", "Action": "s3:GetObject", "Resource": "arn:aws:s3:::userbucket/public/*" }
+          ]
+        }
+      ]
+    }
+  ]
+}

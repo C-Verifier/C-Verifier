@@ -1,0 +1,62 @@
+{
+  "expected_result": "not_vulnerable",
+  "cognito_identity_pools": [
+    {
+      "id": "us-east-1:c3d4e5f6-a7b8-9012-3456-7890abcdef12",
+      "name": "BroadUnauthAccessIdentityPool",
+      "config": {
+        "AllowUnauthenticatedIdentities": true,
+        "AllowClassicFlow": false,
+        "UnauthenticatedRoleArn": "arn:aws:iam::123456789012:role/BroadUnauth_ExplorerRole"
+      }
+    }
+  ],
+  "roles": [
+    {
+      "arn": "arn:aws:iam::123456789012:role/BroadUnauth_ExplorerRole",
+      "name": "BroadUnauth_ExplorerRole",
+      "trust_policy_document": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "cognito-identity.amazonaws.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "cognito-identity.amazonaws.com:aud": "us-east-1:c3d4e5f6-a7b8-9012-3456-7890abcdef12"
+              },
+              "ForAnyValue:StringLike": {
+                "cognito-identity.amazonaws.com:amr": "unauthenticated"
+              }
+            }
+          }
+        ]
+      },
+      "permission_policy_documents": [
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "UnauthBroadMixedAccess",
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject",
+                "lambda:InvokeFunction",
+                "dynamodb:Scan"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                    "lambda:EventSourceToken": "THIS_IS_NOT_A_REAL_TOKEN_AND_WILL_NEVER_MATCH_ANY_AWS_GENERATED_EVENT_SOURCE_TOKEN_12345_!@#$%"
+                }
+            }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
