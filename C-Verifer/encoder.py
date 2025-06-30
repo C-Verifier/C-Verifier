@@ -187,7 +187,6 @@ if __name__ == "__main__":
     config_data = {
         "roles": [],
         "cognito_identity_pools": [],
-        "default_anon_policy_permissions": [] # Manual step required: FILL THIS BASED ON AWS DOCS!
     }
 
     # Get roles data, filtered by trust policy
